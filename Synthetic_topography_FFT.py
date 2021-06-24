@@ -12,10 +12,11 @@ from matplotlib import pyplot as plt
 import pandas
 import os
 datadir = os.path.join('C:\\Users\\Research Lab\\Desktop\\SI_Resources\\Synthetic_topography\\') # directory for some sample data files
-filename = 'Elevation_profile2.csv'
+#filename = 'Elevation_profile2.csv'
+filename = "site1.csv"
 filepath = os.path.join(datadir, filename)
 df = pandas.read_csv(filepath)
-print(df['Graphic Profile 1'])
+
 sig = df.ix[:,1]
 sig_non_zero = sig[sig!=0]
 #%%
@@ -27,7 +28,7 @@ sig_fft = fftpack.fft(sig_non_zero)
 power = np.abs(sig_fft)**2
 
 # The corresponding frequencies
-sample_freq = fftpack.fftfreq(sig_non_zero.size, d=time_step)
+sample_freq = fftpack.fftfreq(sig_non_zero.size)
 
 # Plot the FFT power
 plt.figure(figsize=(6, 5))
@@ -39,7 +40,6 @@ plt.ylabel('plower')
 pos_mask = np.where(sample_freq > 0)
 freqs = sample_freq[pos_mask]
 peak_freq = freqs[power[pos_mask].argmax()]
-peak_freqs = freqs[[0,3,8]]
 
 # Check that it does indeed correspond to the frequency that we generate
 # the signal with
@@ -52,12 +52,13 @@ plt.plot(freqs[:15], power[:15])
 plt.setp(axes, yticks=[])
 
 plt.figure(figsize=(9, 7))
-plt.plot(freqs[2:100], power[2:100])
+plt.plot(freqs[2:50], power[2:50])
 
 # scipy.signal.find_peaks_cwt can also be used for more advanced
 # peak detection
 #%%
 time_vec = np.arange(0, sig_non_zero.size, 1)
+time_vec = df.ix[:,0]
 #%%
 #Setting a cutoff threshold at the first 
 
@@ -66,26 +67,26 @@ high_freq_fft_coarse[np.abs(sample_freq) > peak_freq] = 0
 filtered_sig_coarse = fftpack.ifft(high_freq_fft_coarse)
 
 high_freq_fft_fine = sig_fft.copy()
-high_freq_fft_fine [np.abs(sample_freq) > peak_freqs[2]] = 0
+high_freq_fft_fine [np.abs(sample_freq) > freqs[2]] = 0
 filtered_sig_fine = fftpack.ifft(high_freq_fft_fine)
 
 high_freq_fft_finest = sig_fft.copy()
-high_freq_fft_finest [np.abs(sample_freq) > 0.5] = 0
+high_freq_fft_finest [np.abs(sample_freq) > 0.002] = 0
 filtered_sig_finest = fftpack.ifft(high_freq_fft_finest)
 
 #%%
 # Estimating the standard deviation for the noise
 
 SD_sample_coarse = np.std(sig_non_zero-filtered_sig_coarse )
-noise_random_coarse = np.random.normal(0, 1, sig_non_zero.size)
+noise_random_coarse = np.random.normal(0, .25, sig_non_zero.size)
 synthetic_topo_coarse = filtered_sig_coarse + noise_random_coarse
 
 SD_sample_fine = np.std(sig_non_zero-filtered_sig_fine )
-noise_random_fine = np.random.normal(0, 1, sig_non_zero.size)
+noise_random_fine = np.random.normal(0, .25, sig_non_zero.size)
 synthetic_topo_fine = filtered_sig_fine + noise_random_fine
 
 SD_sample_finest = np.std(sig_non_zero-filtered_sig_finest )
-noise_random_finest = np.random.normal(0, 1, sig_non_zero.size)
+noise_random_finest = np.random.normal(0, .25, sig_non_zero.size)
 synthetic_topo_finest = filtered_sig_finest + noise_random_finest
 
 
@@ -94,30 +95,30 @@ synthetic_topo_finest = filtered_sig_finest + noise_random_finest
 
 plt.figure(figsize=(10, 10))
 plt.subplot(2, 2, 1)
-plt.plot(time_vec, sig_non_zero, linewidth=2, label='Original signal')
-plt.xlabel('Distance(m)')
-plt.ylabel('Elevation(m)')
+plt.plot(time_vec, sig_non_zero, linewidth=2, label='Elev Prof Site 1')
+plt.xlabel('Distance (degrees)')
+plt.ylabel('Elevation (m)')
 plt.legend(loc='best')
 
 plt.subplot(2, 2, 2)
-plt.plot(time_vec, sig_non_zero, linewidth=2, label='Original signal')
+plt.plot(time_vec, sig_non_zero, linewidth=2, label='Elev Prof Site 1')
 plt.plot(time_vec, synthetic_topo_coarse, linewidth=1, label='Syn topo coarse')
-plt.xlabel('Distance(m)')
-plt.ylabel('Elevation(m)')
+plt.xlabel('Distance (degrees)')
+plt.ylabel('Elevation (m)')
 plt.legend(loc='best')
 
 plt.subplot(2, 2, 3)
-plt.plot(time_vec, sig_non_zero, linewidth=2, label='Original signal')
+plt.plot(time_vec, sig_non_zero, linewidth=2, label='Elev Prof Site 1')
 plt.plot(time_vec, synthetic_topo_fine, linewidth=1, label='Syn topo fine')
-plt.xlabel('Distance(m)')
-plt.ylabel('Elevation(m)')
+plt.xlabel('Distance (degrees)')
+plt.ylabel('Elevation (m)')
 plt.legend(loc='best')
 
 plt.subplot(2, 2, 4)
-plt.plot(time_vec, sig_non_zero, linewidth=2, label='Original signal')
+plt.plot(time_vec, sig_non_zero, linewidth=2, label='Elev Prof Site 1')
 plt.plot(time_vec, synthetic_topo_finest, linewidth=1, label='Syn topo finest')
-plt.xlabel('Distance(m)')
-plt.ylabel('Elevation(m)')
+plt.xlabel('Distance (degrees)')
+plt.ylabel('Elevation (m)')
 plt.legend(loc='best')
 
 
