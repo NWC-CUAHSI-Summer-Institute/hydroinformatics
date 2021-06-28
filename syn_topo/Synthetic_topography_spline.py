@@ -13,7 +13,7 @@ import seaborn as sns; sns.set_theme()
 #%%
 import pandas as pd
 import os
-datadir = os.path.join('C:\\Users\\jbarrett.carter\\OneDrive\\CUAHSI-SI\\Topography') # directory for some sample data files
+datadir = os.path.join('/home/jovyan/data/hydroinformatics/syn_topo/data') # directory for some sample data files
 #filename = 'Elevation_profile2.csv'
 filename = "Shallotte_profile.csv"
 filepath = os.path.join(datadir, filename)
