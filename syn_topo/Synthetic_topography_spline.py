@@ -8,6 +8,7 @@ Created on Thu Jun 24 10:36:17 2021
 import numpy as np
 from scipy.interpolate import CubicSpline
 from matplotlib import pyplot as plt
+import seaborn as sns; sns.set_theme()
 #%%
 import pandas
 import os
@@ -56,22 +57,49 @@ plt.legend(loc='best')
 #%%
 # Making it 3D
 
-x = dist.to_numpy()
-y = np.linspace(0,5,num=100)
-topo = np.zeros((1,3))
+y = dist.to_numpy()
+x = np.linspace(0,5,num=len(y))
+z = np.zeros((len(x),len(y)))
+xyz = np.zeros((1,3))
 col=1
-for col in range(len(y)):
-    zs=syn_elev*abs(np.sin(10*y[col]))
-    ys = np.ones((len(dist)))
-    ys = ys*y[col]
-    new_vals = np.stack((x,ys,zs),axis = 1)
-    topo = np.append(topo,new_vals,axis=0)
+# to make 2d grid of z values
+for col in range(z.shape[0]):
+    # z[:,col]=syn_elev*abs(np.sin(10*x[col]))
+    # z[:,col]=syn_elev*x[col]
+    z[:,col]=syn_elev+10*(np.sin(x[col]))
+    # z[:,col]=syn_elev
+
+
+# to make xyz matrix
+# for col in range(len(y)):
+#     zs=syn_elev*abs(np.sin(10*y[col]))
+#     ys = np.ones((len(dist)))
+#     ys = ys*y[col]
+#     new_vals = np.stack((x,ys,zs),axis = 1)
+#     topo = np.append(topo,new_vals,axis=0)
 
 #%%
 
+#visualize cross sections
+
+cs = 1000
+
+plt.plot(y,z[:,cs])
+
+#%%
+
+#heatmap
+xis = np.linspace(40,4000,num = 100).astype(int)
+yis = np.linspace(40,4000,num = 100).astype(int)
+zis = np.meshgrid(xis,yis,indexing = 'ij')
+zsub = z[zis]
+ax = sns.heatmap(zsub)
+
+#%%
+# contour plot
 fig = plt.figure()
 ax = plt.axes(projection='3d')
-ax.contour3D(topo[:,0],topo[:,1],topo[:,2])
+ax.contour3D(x,y,z)
 
 #%%
 
