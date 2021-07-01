@@ -381,10 +381,13 @@ def setgeo(rundata):
     #   [topotype, fname]
     # See regions for control over these regions, need better bathy data for
     # the smaller domains
-    clawutil.data.get_remote_file(
-           "http://www.columbia.edu/~ktm2132/bathy/gulf_caribbean.tt3.tar.bz2")
-    topo_path = os.path.join(scratch_dir, 'gulf_caribbean.tt3')
-    topo_data.topofiles.append([3, topo_path])
+    #clawutil.data.get_remote_file(
+    #       "http://www.columbia.edu/~ktm2132/bathy/gulf_caribbean.tt3.tar.bz2")
+    #topo_path = os.path.join(scratch_dir, 'gulf_caribbean.tt3')
+    #topo_data.topofiles.append([3, topo_path])
+    topo_hydro_dir = '/home/jovyan/data/topo_files_output/'
+    topo_path = os.path.join(topo_hydro_dir, 'Topo4.txt')
+    topo_data.topofiles.append([2, topo_path])
 
     # == setfixedgrids.data values ==
     rundata.fixed_grid_data.fixedgrids = []
