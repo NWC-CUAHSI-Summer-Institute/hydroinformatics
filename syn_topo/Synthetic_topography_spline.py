@@ -7,6 +7,7 @@ Created on Thu Jun 24 10:36:17 2021
 
 import numpy as np
 from scipy.interpolate import CubicSpline
+from scipy.interpolate import interp1d
 from matplotlib import pyplot as plt
 import seaborn as sns; sns.set_theme()
 from scipy.interpolate import interp2d
@@ -85,9 +86,9 @@ y_bs = y[base_shore]
 x_max = max(x)
 y_max = max(y)
 
-# s = np.ones(len(y))*y_bs # flat shore
+s = np.ones(len(y))*y_bs # flat shore
 # s = y_bs+2000*abs(np.sin((x)*np.pi/x_max)) # one big curve
-s = y_bs+2000*abs(np.sin((x+x_max/4)*2*np.pi/x_max)) #curved with points
+# s = y_bs+2000*abs(np.sin((x+x_max/4)*2*np.pi/x_max)) #curved with points
 
 # add in triangular bay centered at x = x_bay
 sb = np.empty((len(y)))
@@ -161,30 +162,63 @@ for col in range(z.shape[1]):
 # ytrans = y[y>s[x==int(x_bay-bay_width-trans_width-1)]]
 # ztrans = z[x==xtrans,y==ytrans]
 
-yind = 8000
-zcross = z[yind,:]
-plt.plot(x,zcross)
-plt.title('y = 24 km -- before')
-
-left_trans = np.logical_and(x<x_bay,trans>=y[yind])
-right_trans = np.logical_and(x>x_bay,trans>=y[yind])
-
-zcross[left_trans]=np.nan
-zcross[right_trans]=np.nan
-
-xsub = x[np.isnan(zcross)==False]
-zcross = zcross[np.isnan(zcross)==False]
-
-plt.plot(xsub,zcross)
-plt.title('y = 24 km -- intermediate')
-
-cs2 = CubicSpline(xsub,zcross)
-
-zcross_syn = cs2(x)
-
-plt.plot(xsub,zcross,linewidth=2)
-plt.plot(x,zcross_syn)
-plt.title('y = 24 km -- after')
+yind = 10000
+for yind in range(z.shape[0]):
+    if y[yind]>=min(trans[np.isnan(trans)==False]):
+        if y[yind]<max(sb[np.isnan(sb)==False]):
+            zcross = z[yind,:]
+            # plt.plot(x,zcross)
+            # plt.title('y = 24 km -- before')
+            
+            left_trans = np.logical_and(x<x_bay,trans>=y[yind])
+            right_trans = np.logical_and(x>x_bay,trans>=y[yind])
+            
+            zcross[left_trans]=np.nan
+            zcross[right_trans]=np.nan
+            
+            xsub = x[np.isnan(zcross)==False]
+            zcross = zcross[np.isnan(zcross)==False]
+            
+            # plt.plot(xsub,zcross)
+            # plt.title('y = 24 km -- intermediate')
+            
+            # cs2 = CubicSpline(xsub,zcross)
+            cs2 = interp1d(xsub,zcross)
+            
+            zcross_syn = cs2(x)
+            
+            # plt.plot(xsub,zcross,linewidth=5)
+            # plt.plot(x,zcross_syn)
+            # plt.title('y = 24 km -- after')
+            
+            z[yind,:]=zcross_syn
+        if y[yind]>=max(sb[np.isnan(sb)==False]):
+            zcross = z[yind,:]
+            # plt.plot(x,zcross)
+            # plt.title('y = 24 km -- before')
+            
+            left_trans = np.logical_and(x<x_bay,x>x_bay-river_width/2-trans_width)
+            right_trans = np.logical_and(x>x_bay,x<x_bay+river_width/2+trans_width)
+            
+            zcross[left_trans]=np.nan
+            zcross[right_trans]=np.nan
+            
+            xsub = x[np.isnan(zcross)==False]
+            zcross = zcross[np.isnan(zcross)==False]
+            
+            # plt.plot(xsub,zcross)
+            # plt.title('y = 24 km -- intermediate')
+            
+            # cs2 = CubicSpline(xsub,zcross)
+            cs2 = interp1d(xsub,zcross)
+            
+            zcross_syn = cs2(x)
+            
+            # plt.plot(xsub,zcross,linewidth=5)
+            # plt.plot(x,zcross_syn)
+            # plt.title('y = 24 km -- after')
+            
+            z[yind,:]=zcross_syn
 
 
 #%%
@@ -202,12 +236,18 @@ plt.title('y = 24 km -- after')
 
 #%%
 
-#visualize cross sections
+#visualize y cross sections
 
 xind = 0
 
 plt.plot(y[6000:7000],z[6000:7000,xind])
 plt.ylim((-10,10))
+
+#%% visualize x cross sections
+
+yind = 6972
+
+plt.plot(x,z[yind,:])
 
 #%%
 
