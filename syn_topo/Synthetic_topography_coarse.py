@@ -10,14 +10,14 @@ from scipy.interpolate import CubicSpline
 from scipy.interpolate import UnivariateSpline
 from matplotlib import pyplot as plt
 import seaborn as sns; sns.set_theme()
-from scipy.interpolate import interp2d
+from scipy.interpolate import interp1d
 
 #%%
 import pandas as pd
 import os
-datadir = os.path.join('C:\\Users\\jbarrett.carter\\OneDrive\\CUAHSI-SI\\Topography') # directory for some sample data files
+datadir = os.path.join('C:\\Users\\barre\\OneDrive\\CUAHSI-SI\\Topography\\Profiles') # directory for some sample data files
 #filename = 'Elevation_profile2.csv'
-filename = "Shallotte_profile.csv"
+filename = "Shallotte_NC.csv"
 file2 = "OceanDepth.csv"
 filepath = os.path.join(datadir, filename)
 filepath2 = os.path.join(datadir, file2)
@@ -27,15 +27,17 @@ df2 = df2.loc[0:16,:]
 
 #%%
 elev = df.loc[:,'Elevation']
-dist = (df.loc[:,'X_axis']-1)*3
-dist = (dist-max(dist))*(-1)
+dist = df.loc[:,'Distance']
+elev = elev[0:10001]
+dist = dist[0:10001]
 elev2 = df2.loc[:,'dpeth']
 dist2 = df2.loc[:,'X-axis']
+#%%
 
-elev = elev.to_numpy()
+elev = elev.to_numpy() 
 elev2 = elev2.to_numpy()
-dist = dist.to_numpy()
-dist2=dist2.to_numpy()
+dist = dist.to_numpy()/1000 #changed to kilometers
+dist2=dist2.to_numpy()/1000
 
 #%%
 plt.plot(dist,elev)
@@ -46,35 +48,42 @@ plt.plot(dist2,elev2)
 
 #making the two match up
 
-dist2 = (dist2-max(dist2))*(-1)
+
+elev = np.flip(elev)
 elev2 = elev2+elev[0]-elev2[0]
 dist=dist+max(dist2)+1
 
-elev = np.flip(elev)
-dist = np.flip(dist)
+# dist = np.flip(dist)
+dist2 = np.flip(dist2)
+elev2 = np.flip(elev2)
+dist2 = (dist2-max(dist2))*(-1)
 
 
-elev = np.concatenate([elev,elev2])
-dist = np.concatenate([dist,dist2])
+elev = np.concatenate([elev2,elev])
+dist = np.concatenate([dist2,dist])
+plt.plot(dist[15:10037],elev[15:10037])
+plt.figure()
 plt.plot(dist,elev)
 
 #%%
 
-# make length = 1000 km
+# make length = 10,000 km
 
-dist = dist + 10**6- max(dist)
-dist =np.append(dist,0)
-elev = np.append(elev,min(elev))
+dim = 5000
+
+dist = dist + dim- max(dist)
+dist =np.append(0,dist)
+elev = np.append(min(elev),elev)
 plt.plot(dist,elev)
 #%%
-#Create spline models
-dist = np.flip(dist)/1000 #changed to meters
-elev = np.flip(elev)
-cs = CubicSpline(dist,elev)
+#Create mathematical model
+
+# cs = CubicSpline(dist,elev)
 # us = UnivariateSpline(dist, elev)
+interp = interp1d(dist, elev)
 
-y = np.linspace(1,1000,num=1000)
-syn_elev = cs(y)
+y = np.linspace(1,dim,num=dim)
+syn_elev = interp(y)
 # syn_elev2 = us(y)
 
 
@@ -91,15 +100,15 @@ plt.ylabel('Elevation (m)')
 plt.legend(loc='best')
 
 plt.subplot(3, 1, 2)
-plt.plot(dist[dist>920], elev[dist>920],'bo-', linewidth=2, label='Elev Prof Site 1')
-plt.plot(y[y>920], syn_elev[y>920], color = 'orange',linewidth=1, label='Syn topo rough')
+plt.plot(dist[dist>4000], elev[dist>4000],'bo-', linewidth=2, label='Elev Prof Site 1')
+plt.plot(y[y>4000], syn_elev[y>4000], color = 'orange',linewidth=1, label='Syn topo rough')
 plt.xlabel('Distance (km)')
 plt.ylabel('Elevation (m)')
 plt.legend(loc='best')
 
 plt.subplot(3, 1, 3)
-plt.plot(dist[dist>980], elev[dist>980], 'bo-',linewidth=2, label='Elev Prof Site 1')
-plt.plot(y[y>980], syn_elev[y>980], color = 'orange',linewidth=1, label='Syn topo rough')
+plt.plot(dist[dist>4980], elev[dist>4980], 'bo-',linewidth=2, label='Elev Prof Site 1')
+plt.plot(y[y>4980], syn_elev[y>4980], color = 'orange',linewidth=1, label='Syn topo rough')
 plt.xlabel('Distance (km)')
 plt.ylabel('Elevation (m)')
 plt.legend(loc='best')
@@ -134,13 +143,13 @@ plt.legend(loc='best')
 
 # Need to fix model in range of y = 930 to 970
 
-cs2 = CubicSpline(dist[dist>925],elev[dist>925],bc_type='natural')
-y_upper = y[y>925]
-syn_elev_upper = cs2(y_upper)
-plt.plot(dist[dist>980], elev[dist>980], 'bo-',linewidth=2)
-plt.plot(y_upper[y_upper>980],syn_elev_upper[y_upper>980],color='orange')
+# cs2 = CubicSpline(dist[dist>925],elev[dist>925],bc_type='natural')
+# y_upper = y[y>925]
+# syn_elev_upper = cs2(y_upper)
+# plt.plot(dist[dist>980], elev[dist>980], 'bo-',linewidth=2)
+# plt.plot(y_upper[y_upper>980],syn_elev_upper[y_upper>980],color='orange')
 
-syn_elev[y>925]=syn_elev_upper
+# syn_elev[y>925]=syn_elev_upper
 
 #%%
 # Making it 3D
@@ -151,7 +160,7 @@ z = np.zeros((len(y),len(x)))
 
 #%%
 # Defining the shorline shoreline (z=0 contour)
-below_sl = syn_elev<0
+below_sl = syn_elev<-5
 base_shore = int(max(np.argwhere(below_sl)))
 y_bs = y[base_shore]
 x_max = max(x)
@@ -159,8 +168,8 @@ y_max = max(y)
 x_max_fine = max(df['X_axis'])*3/1000
 
 # s = np.ones(len(y))*y_bs # flat shore
-# s = y_bs+2*abs(np.sin((x-500+x_max_fine/2)*np.pi/x_max_fine)) # one big curve
-s = y_bs+2*abs(np.sin((x-500+x_max_fine/4)*2*np.pi/x_max_fine)) #curved with points
+# s = y_bs+2*abs(np.sin((x-x_max/2+x_max_fine/2)*np.pi/x_max_fine)) # one big curve
+s = y_bs+2*abs(np.sin((x-x_max/2+x_max_fine/4)*2*np.pi/x_max_fine)) #curved with points
 
 # add in triangular bay centered at x = x_bay
 sb = np.empty((len(y)))
@@ -195,7 +204,7 @@ plt.plot(x,sb, label = 'bay')
 plt.plot(x,trans, label = 'transition')
 plt.legend()
 
-sub = np.logical_and(x>450,x<550)
+sub = np.logical_and(x>2450,x<2550)
 plt.figure()
 plt.plot(x[sub],s[sub], label = 'shorline')
 plt.plot(x[sub],sb[sub], label = 'bay')
@@ -214,7 +223,7 @@ for col in range(z.shape[1]):
     ynew = y-s[col]+y_bs
     ynew[ynew<0]=0
     ynew[ynew>y_max]=y_max
-    z[:,col]=cs(ynew)
+    z[:,col]=interp(ynew)
     if in_bay[col]==True:
         y_bay = np.logical_and(y>s[col],y<sb[col])
         z[y_bay,col]=-5
@@ -248,10 +257,10 @@ for col in range(z.shape[1]):
 #%%
 
 #heatmap
-xis = np.linspace(450,550,num = 100,endpoint=False).astype(int)
-yis = np.linspace(980,1000,num = 20,endpoint=False).astype(int)
-# xis = np.linspace(0,len(x),num = 100,endpoint=False).astype(int)
-# yis = np.linspace(0,len(y),num = 100,endpoint=False).astype(int)
+# xis = np.linspace(450,550,num = 100,endpoint=False).astype(int)
+# yis = np.linspace(980,1000,num = 20,endpoint=False).astype(int)
+xis = np.linspace(0,len(x),num = 1000,endpoint=False).astype(int)
+yis = np.linspace(0,len(y),num = 1000,endpoint=False).astype(int)
 zis = np.meshgrid(yis,xis,indexing = 'ij')
 zsub = z[zis]
 zsub = np.flip(zsub)
