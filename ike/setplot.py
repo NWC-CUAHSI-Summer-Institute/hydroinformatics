@@ -67,10 +67,10 @@ def setplot(plotdata=None):
     # ==========================================================================
     regions = {"Gulf": {"xlimits": (clawdata.lower[0], clawdata.upper[0]),
                         "ylimits": (clawdata.lower[1], clawdata.upper[1]),
-                        "figsize": (6.4, 4.8)},
-               "LaTex Shelf": {"xlimits": (-97.5, -88.5),
-                               "ylimits": (27.5, 30.5),
-                               "figsize": (8, 2.7)}}
+                        "figsize": (6.4, 4.8)}}#,
+               #"LaTex Shelf": {"xlimits": (-97.5, -88.5),
+               #                "ylimits": (27.5, 30.5),
+               #                "figsize": (8, 2.7)}}
 
     for (name, region_dict) in regions.items():
 

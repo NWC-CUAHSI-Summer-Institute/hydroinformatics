@@ -368,7 +368,7 @@ def generate_topo(site_file_name,directory,shape,bay = False,plot = 3,
     #%%
 
 my_dir = 'C:\\Users\\barre\\OneDrive\\CUAHSI-SI\\Topography\\Profiles'
-profiles = ['Atlantic_city_NJ.csv','Marley_beach_SC.csv','Melbourne_FL.csv',
+profiles = ['Barnegat_bay_NJ.csv','Marley_beach_SC.csv','Melbourne_FL.csv',
             'Savannah_GA.csv','Shallotte_NC.csv']
 zs = generate_topo(site_file_name='Melbourne_FL.csv', directory = my_dir,shape = 'points', bay = True, plot = 3)
 # generate_topo(site_file_name='Shallotte_profile.csv',shape = 'curved', bay = True, plot = 3)

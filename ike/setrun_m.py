@@ -69,10 +69,10 @@ def setrun(claw_pkg='geoclaw'):
 
     # Lower and upper edge of computational domain:
     clawdata.lower[0] = 0      
-    clawdata.upper[0] = 5000.0   
+    clawdata.upper[0] = 5000000.0   
 
     clawdata.lower[1] = 0      
-    clawdata.upper[1] = 5000.0   
+    clawdata.upper[1] = 5000000.0   
 
     # Number of grid cells: Coarsest grid
     clawdata.num_cells[0] = 5000
@@ -170,7 +170,7 @@ def setrun(claw_pkg='geoclaw'):
     clawdata.cfl_max = 1.0
 
     # Maximum number of time steps to allow between output times:
-    clawdata.steps_max = 5000
+    clawdata.steps_max = 15000
 
     # ------------------
     # Method to be used:
@@ -257,7 +257,10 @@ def setrun(claw_pkg='geoclaw'):
     # AMR parameters:
     # ---------------
     amrdata = rundata.amrdata
-  
+
+    # max number of refinement levels
+    amrdata.amr_levels_max = 2
+    
     
     # max number of refinement levels:
     amrdata.amr_levels_max = 3
@@ -266,6 +269,7 @@ def setrun(claw_pkg='geoclaw'):
     amrdata.refinement_ratios_x = [2,2,6]
     amrdata.refinement_ratios_y = [2,2,6]
     amrdata.refinement_ratios_t = [2,2,6]
+
 
     # Specify type of each aux variable in amrdata.auxtype.
     # This must be a list of length maux, each element of which is one of:
@@ -311,22 +315,22 @@ def setrun(claw_pkg='geoclaw'):
     regions = rundata.regiondata.regions
     # to specify regions of refinement append lines of the form
     #  [minlevel,maxlevel,t1,t2,x1,x2,y1,y2]
-    regions.append([1, 1, 0., 1.e10, 0,5000., 0.,5000.])
-    regions.append([1, 2, 0., 1.e10,    2000.,3000.,    4500.,5000.])
-    regions.append([2, 3, 3., 1.e10,   2450., 2550.,   4550., 5000.])
+    regions.append([1, 1, 0., 1.e10, 0,5000000., 0.,5000000.])
+    regions.append([1, 2, 0., 1.e10,    2000000.,3000000.,    4500000.,5000000.])
+    regions.append([2, 3, 3., 1.e10,   2450000., 2550000.,   4550000., 5000000.])
     
     # Gauges from Ike AWR paper (2011 Dawson et al)
     # Gauges from Path of storm 2
-    rundata.gaugedata.gauges.append([1, 1200, 700,
+    rundata.gaugedata.gauges.append([1, 1200000, 700000,
                                     rundata.clawdata.t0,
                                     rundata.clawdata.tfinal])
-    rundata.gaugedata.gauges.append([2, 1850, 2000,
+    rundata.gaugedata.gauges.append([2, 1850000, 2000000,
                                     rundata.clawdata.t0,
                                     rundata.clawdata.tfinal])
-    rundata.gaugedata.gauges.append([3, 2400, 2900,
+    rundata.gaugedata.gauges.append([3, 2400000, 2900000,
                                     rundata.clawdata.t0,
                                     rundata.clawdata.tfinal])
-    rundata.gaugedata.gauges.append([4, 2575, 4500,
+    rundata.gaugedata.gauges.append([4, 2575000, 4500000,
                                     rundata.clawdata.t0,
                                     rundata.clawdata.tfinal])
 
@@ -389,9 +393,9 @@ def setgeo(rundata):
     #topo_path = os.path.join(scratch_dir, 'gulf_caribbean.tt3')
     #topo_data.topofiles.append([3, topo_path])
     topo_hydro_dir = '/home/jovyan/data/topo_files_output/'
-    topo_fine_path = os.path.join(topo_hydro_dir, 'Melbourne_FL.nc')
-    topo_coarse_path = os.path.join(topo_hydro_dir, 'Melbourne_FL_coarse.nc')
-    topo_data.topofiles.append([4, topo_fine_path])
+    #topo_fine_path = os.path.join(topo_hydro_dir, 'Melbourne_FL_m.nc')
+    topo_coarse_path = os.path.join(topo_hydro_dir, 'Melbourne_FL_coarse_m.nc')
+    #topo_data.topofiles.append([4, topo_fine_path])
     topo_data.topofiles.append([4, topo_coarse_path])
 
     # == setfixedgrids.data values ==
@@ -419,7 +423,7 @@ def setgeo(rundata):
     # Storm parameters - Parameterized storm (Holland 1980)
     data.storm_specification_type = 'holland80'  # (type 1)
     data.storm_file = os.path.expandvars(os.path.join(os.getcwd(),
-                                         'Storm2km.storm'))
+                                         'Storm2.storm'))
 
     # Convert ATCF data to GeoClaw format
     clawutil.data.get_remote_file(
