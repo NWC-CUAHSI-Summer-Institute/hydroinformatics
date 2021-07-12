@@ -45,11 +45,11 @@ def setrun(claw_pkg='geoclaw'):
     """
 
     from clawpack.clawutil import data
+
     assert claw_pkg.lower() == 'geoclaw',  "Expected claw_pkg = 'geoclaw'"
 
     num_dim = 2
     rundata = data.ClawRunData(claw_pkg, num_dim)
-    
 
     # ------------------------------------------------------------------
     # Standard Clawpack parameters to be written to claw.data:
@@ -68,15 +68,18 @@ def setrun(claw_pkg='geoclaw'):
     clawdata.num_dim = num_dim
 
     # Lower and upper edge of computational domain:
-    clawdata.lower[0] = 0      
-    clawdata.upper[0] = 5000.0   
+    clawdata.lower[0] = -99.0      # west longitude
+    clawdata.upper[0] = -70.0      # east longitude
 
-    clawdata.lower[1] = 0      
-    clawdata.upper[1] = 5000.0   
+    clawdata.lower[1] = 8.0       # south latitude
+    clawdata.upper[1] = 32.0      # north latitude
 
-    # Number of grid cells: Coarsest grid
-    clawdata.num_cells[0] = 5000
-    clawdata.num_cells[1] = 5000
+    # Number of grid cells:
+    degree_factor = 4  # (0.25º,0.25º) ~ (25237.5 m, 27693.2 m) resolution
+    clawdata.num_cells[0] = int(clawdata.upper[0] - clawdata.lower[0]) \
+        * degree_factor
+    clawdata.num_cells[1] = int(clawdata.upper[1] - clawdata.lower[1]) \
+        * degree_factor
 
     # ---------------
     # Size of system:
@@ -257,15 +260,14 @@ def setrun(claw_pkg='geoclaw'):
     # AMR parameters:
     # ---------------
     amrdata = rundata.amrdata
-  
-    
+
     # max number of refinement levels:
-    amrdata.amr_levels_max = 3
+    amrdata.amr_levels_max = 2
 
     # List of refinement ratios at each level (length at least mxnest-1)
-    amrdata.refinement_ratios_x = [2,2,6]
-    amrdata.refinement_ratios_y = [2,2,6]
-    amrdata.refinement_ratios_t = [2,2,6]
+    amrdata.refinement_ratios_x = [2, 2, 2, 6, 16]
+    amrdata.refinement_ratios_y = [2, 2, 2, 6, 16]
+    amrdata.refinement_ratios_t = [2, 2, 2, 6, 16]
 
     # Specify type of each aux variable in amrdata.auxtype.
     # This must be a list of length maux, each element of which is one of:
@@ -311,159 +313,149 @@ def setrun(claw_pkg='geoclaw'):
     regions = rundata.regiondata.regions
     # to specify regions of refinement append lines of the form
     #  [minlevel,maxlevel,t1,t2,x1,x2,y1,y2]
-    regions.append([1, 1, 0., 1.e10, 0,5000., 0.,5000.])
-    regions.append([1, 2, 0., 1.e10,    2000.,3000.,    4500.,5000.])
-    regions.append([2, 3, 3., 1.e10,   2450., 2550.,   4550., 5000.])
-    
     # Gauges from Ike AWR paper (2011 Dawson et al)
-    # Gauges from Path of storm 2
-    rundata.gaugedata.gauges.append([1, 1200, 700,
-                                    rundata.clawdata.t0,
-                                    rundata.clawdata.tfinal])
-    rundata.gaugedata.gauges.append([2, 1850, 2000,
-                                    rundata.clawdata.t0,
-                                    rundata.clawdata.tfinal])
-    rundata.gaugedata.gauges.append([3, 2400, 2900,
-                                    rundata.clawdata.t0,
-                                    rundata.clawdata.tfinal])
-    rundata.gaugedata.gauges.append([4, 2575, 4500,
-                                    rundata.clawdata.t0,
-                                    rundata.clawdata.tfinal])
+    rundata.gaugedata.gauges.append([1, -95.04, 29.07,
+                                     rundata.clawdata.t0,
+                                     rundata.clawdata.tfinal])
+    rundata.gaugedata.gauges.append([2, -94.71, 29.28,
+                                     rundata.clawdata.t0,
+                                     rundata.clawdata.tfinal])
+    rundata.gaugedata.gauges.append([3, -94.39, 29.49,
+                                     rundata.clawdata.t0,
+                                     rundata.clawdata.tfinal])
+    rundata.gaugedata.gauges.append([4, -94.13, 29.58,
+                                     rundata.clawdata.t0,
+                                     rundata.clawdata.tfinal])
 
     # Force the gauges to also record the wind and pressure fields
     rundata.gaugedata.aux_out_fields = [4, 5, 6]
 
-
-    return rundata
-    # end of function setrun
-    # ----------------------
-    
     # ------------------------------------------------------------------
     # GeoClaw specific parameters:
     # ------------------------------------------------------------------
     rundata = setgeo(rundata)
 
-# -------------------
-def setgeo(rundata):
-    """
-    Set GeoClaw specific runtime parameters.
-    For documentation see ....
-    """
-
-    geo_data = rundata.geo_data
-
-    # == Physics ==
-    geo_data.gravity = 9.81
-    geo_data.coordinate_system = 1
-    geo_data.earth_radius = 6367.5e3
-    geo_data.rho = 1025.0
-    geo_data.rho_air = 1.15
-    geo_data.ambient_pressure = 101.3e3
-
-    # == Forcing Options
-    geo_data.coriolis_forcing = False
-    geo_data.friction_forcing = True
-    geo_data.friction_depth = 1e10
-
-    # == Algorithm and Initial Conditions ==
-    # Note that in the original paper due to gulf summer swelling this was set
-    # to 0.28
-    geo_data.sea_level = 0.0
-    geo_data.dry_tolerance = 1.e-2
-
-    # Refinement Criteria
-    refine_data = rundata.refinement_data
-    refine_data.wave_tolerance = 1.0
-    refine_data.speed_tolerance = [1.0, 2.0, 3.0, 4.0]
-    refine_data.variable_dt_refinement_ratios = True
-
-    # == settopo.data values ==
-    topo_data = rundata.topo_data
-    topo_data.topofiles = []
-    # for topography, append lines of the form
-    #   [topotype, fname]
-    # See regions for control over these regions, need better bathy data for
-    # the smaller domains
-    #clawutil.data.get_remote_file(
-    #       "http://www.columbia.edu/~ktm2132/bathy/gulf_caribbean.tt3.tar.bz2")
-    #topo_path = os.path.join(scratch_dir, 'gulf_caribbean.tt3')
-    #topo_data.topofiles.append([3, topo_path])
-    topo_hydro_dir = '/home/jovyan/data/topo_files_output/'
-    topo_fine_path = os.path.join(topo_hydro_dir, 'Melbourne_FL.nc')
-    topo_coarse_path = os.path.join(topo_hydro_dir, 'Melbourne_FL_coarse.nc')
-    topo_data.topofiles.append([4, topo_fine_path])
-    topo_data.topofiles.append([4, topo_coarse_path])
-
-    # == setfixedgrids.data values ==
-    rundata.fixed_grid_data.fixedgrids = []
-    # for fixed grids append lines of the form
-    # [t1,t2,noutput,x1,x2,y1,y2,xpoints,ypoints,\
-    #  ioutarrivaltimes,ioutsurfacemax]
-
-    # ================
-    #  Set Surge Data
-    # ================
-    data = rundata.surge_data
-
-    # Source term controls
-    data.wind_forcing = True
-    data.drag_law = 1
-    data.pressure_forcing = True
-
-    data.display_landfall_time = True
-
-    # AMR parameters, m/s and m respectively
-    data.wind_refine = [20.0, 40.0, 60.0]
-    data.R_refine = [60.0e3, 40e3, 20e3]
-
-    # Storm parameters - Parameterized storm (Holland 1980)
-    data.storm_specification_type = 'holland80'  # (type 1)
-    data.storm_file = os.path.expandvars(os.path.join(os.getcwd(),
-                                         'Storm2km.storm'))
-
-    # Convert ATCF data to GeoClaw format
-    clawutil.data.get_remote_file(
-                   "http://ftp.nhc.noaa.gov/atcf/archive/2008/bal092008.dat.gz")
-    atcf_path = os.path.join(scratch_dir, "bal092008.dat")
-    # Note that the get_remote_file function does not support gzip files which
-    # are not also tar files.  The following code handles this
-    with gzip.open(".".join((atcf_path, 'gz')), 'rb') as atcf_file,    \
-            open(atcf_path, 'w') as atcf_unzipped_file:
-        atcf_unzipped_file.write(atcf_file.read().decode('ascii'))
-
-    # Uncomment/comment out to use the old version of the Ike storm file
-    # ike = Storm(path="old_ike.storm", file_format="ATCF")
-    ike = Storm(path=atcf_path, file_format="ATCF")
-
-    # Calculate landfall time - Need to specify as the file above does not
-    # include this info (9/13/2008 ~ 7 UTC)
-    ike.time_offset = datetime.datetime(2008, 9, 13, 7)
-
-    ike.write(data.storm_file, file_format='geoclaw')
-
-    # =======================
-    #  Set Variable Friction
-    # =======================
-    data = rundata.friction_data
-
-    # Variable friction
-    data.variable_friction = True
-
-    # Region based friction
-    # Entire domain
-    data.friction_regions.append([rundata.clawdata.lower,
-                                  rundata.clawdata.upper,
-                                  [np.infty, 0.0, -np.infty],
-                                  [0.030, 0.022]])
-
-    # La-Tex Shelf
-    # data.friction_regions.append([(-98, 25.25), (-90, 30),
-    #                              [np.infty, -10.0, -200.0, -np.infty],
-    #                              [0.030, 0.012, 0.022]])
-
     return rundata
-    # end of function setgeo
+    # end of function setrun
     # ----------------------
+
+
+# -------------------
+# def setgeo(rundata):
+#     """
+#     Set GeoClaw specific runtime parameters.
+#     For documentation see ....
+#     """
+
+#     geo_data = rundata.geo_data
+
+#     # == Physics ==
+#     geo_data.gravity = 9.81
+#     geo_data.coordinate_system = 2
+#     geo_data.earth_radius = 6367.5e3
+#     geo_data.rho = 1025.0
+#     geo_data.rho_air = 1.15
+#     geo_data.ambient_pressure = 101.3e3
+
+#     # == Forcing Options
+#     geo_data.coriolis_forcing = True
+#     geo_data.friction_forcing = True
+#     geo_data.friction_depth = 1e10
+
+#     # == Algorithm and Initial Conditions ==
+#     # Note that in the original paper due to gulf summer swelling this was set
+#     # to 0.28
+#     geo_data.sea_level = 0.0
+#     geo_data.dry_tolerance = 1.e-2
+
+#     # Refinement Criteria
+#     refine_data = rundata.refinement_data
+#     refine_data.wave_tolerance = 1.0
+#     refine_data.speed_tolerance = [1.0, 2.0, 3.0, 4.0]
+#     refine_data.variable_dt_refinement_ratios = True
+
+#     # == settopo.data values ==
+#     topo_data = rundata.topo_data
+#     topo_data.topofiles = []
+#     # for topography, append lines of the form
+#     #   [topotype, fname]
+#     # See regions for control over these regions, need better bathy data for
+#     # the smaller domains
+#     clawutil.data.get_remote_file(
+#            "http://www.columbia.edu/~ktm2132/bathy/gulf_caribbean.tt3.tar.bz2")
+#     topo_path = os.path.join(scratch_dir, 'gulf_caribbean.tt3')
+#     topo_data.topofiles.append([3, topo_path])
+
+#     # == setfixedgrids.data values ==
+#     rundata.fixed_grid_data.fixedgrids = []
+#     # for fixed grids append lines of the form
+#     # [t1,t2,noutput,x1,x2,y1,y2,xpoints,ypoints,\
+#     #  ioutarrivaltimes,ioutsurfacemax]
+
+#     # ================
+#     #  Set Surge Data
+#     # ================
+#     data = rundata.surge_data
+
+#     # Source term controls
+#     data.wind_forcing = True
+#     data.drag_law = 1
+#     data.pressure_forcing = True
+
+#     data.display_landfall_time = True
+
+#     # AMR parameters, m/s and m respectively
+#     data.wind_refine = [20.0, 40.0, 60.0]
+#     data.R_refine = [60.0e3, 40e3, 20e3]
+
+#     # Storm parameters - Parameterized storm (Holland 1980)
+#     data.storm_specification_type = 'holland80'  # (type 1)
+#     data.storm_file = os.path.expandvars(os.path.join(os.getcwd(),
+#                                          'ike.storm'))
+
+#     # Convert ATCF data to GeoClaw format
+#     clawutil.data.get_remote_file(
+#                    "http://ftp.nhc.noaa.gov/atcf/archive/2008/bal092008.dat.gz")
+#     atcf_path = os.path.join(scratch_dir, "bal092008.dat")
+#     # Note that the get_remote_file function does not support gzip files which
+#     # are not also tar files.  The following code handles this
+#     with gzip.open(".".join((atcf_path, 'gz')), 'rb') as atcf_file,    \
+#             open(atcf_path, 'w') as atcf_unzipped_file:
+#         atcf_unzipped_file.write(atcf_file.read().decode('ascii'))
+
+#     # Uncomment/comment out to use the old version of the Ike storm file
+#     # ike = Storm(path="old_ike.storm", file_format="ATCF")
+#     ike = Storm(path=atcf_path, file_format="ATCF")
+
+#     # Calculate landfall time - Need to specify as the file above does not
+#     # include this info (9/13/2008 ~ 7 UTC)
+#     ike.time_offset = datetime.datetime(2008, 9, 13, 7)
+
+#     ike.write(data.storm_file, file_format='geoclaw')
+
+#     # =======================
+#     #  Set Variable Friction
+#     # =======================
+#     data = rundata.friction_data
+
+#     # Variable friction
+#     data.variable_friction = True
+
+#     # Region based friction
+#     # Entire domain
+#     data.friction_regions.append([rundata.clawdata.lower,
+#                                   rundata.clawdata.upper,
+#                                   [np.infty, 0.0, -np.infty],
+#                                   [0.030, 0.022]])
+
+#     # La-Tex Shelf
+#     data.friction_regions.append([(-98, 25.25), (-90, 30),
+#                                   [np.infty, -10.0, -200.0, -np.infty],
+#                                   [0.030, 0.012, 0.022]])
+
+#     return rundata
+#     # end of function setgeo
+#     # ----------------------
 
 
 if __name__ == '__main__':
