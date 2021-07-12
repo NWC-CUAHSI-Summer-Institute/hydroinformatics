@@ -65,12 +65,16 @@ def setplot(plotdata=None):
     # ==========================================================================
     #   Plot specifications
     # ==========================================================================
-    regions = {"Gulf": {"xlimits": (clawdata.lower[0], clawdata.upper[0]),
-                        "ylimits": (clawdata.lower[1], clawdata.upper[1]),
+#     regions = {"Gulf": {"xlimits": (clawdata.lower[0], clawdata.upper[0]),
+#                         "ylimits": (clawdata.lower[1], clawdata.upper[1]),
+#                         "figsize": (6.4, 4.8)}}#,
+#                "LaTex Shelf": {"xlimits": (-97.5, -88.5),
+#                                "ylimits": (27.5, 30.5),
+#                                "figsize": (8, 2.7)}}
+
+    regions = {"Gulf": {"xlimits": ((2500-150)*1000, (2500+150)*1000),
+                        "ylimits": ((5000-300)*1000, 5000*1000),
                         "figsize": (6.4, 4.8)}}#,
-               #"LaTex Shelf": {"xlimits": (-97.5, -88.5),
-               #                "ylimits": (27.5, 30.5),
-               #                "figsize": (8, 2.7)}}
 
     for (name, region_dict) in regions.items():
 
@@ -200,8 +204,8 @@ def setplot(plotdata=None):
     plotaxes = plotfigure.new_plotaxes()
     plotaxes.title = 'Gauge Locations'
     plotaxes.scaled = True
-    plotaxes.xlimits = [-95.5, -94]
-    plotaxes.ylimits = [29.0, 30.0]
+    plotaxes.xlimits = [1180000, 2600000]
+    plotaxes.ylimits = [700000, 4500000]
     plotaxes.afteraxes = gauge_location_afteraxes
     surgeplot.add_surface_elevation(plotaxes, bounds=surface_limits)
     surgeplot.add_land(plotaxes, bounds=[0.0, 20.0])
