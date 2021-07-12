@@ -264,9 +264,9 @@ def setrun(claw_pkg='geoclaw'):
     amrdata.amr_levels_max = 4
 
     # List of refinement ratios at each level (length at least mxnest-1)
-    amrdata.refinement_ratios_x = [10,10,50] # [500,50] 500m and 50m grids  
-    amrdata.refinement_ratios_y = [10,10,50]
-    amrdata.refinement_ratios_t = [10,10,50]
+    amrdata.refinement_ratios_x = [10,10,5] # [500,50] 500m and 50m grids  
+    amrdata.refinement_ratios_y = [10,10,5]
+    amrdata.refinement_ratios_t = [10,10,5]
 
     # Specify type of each aux variable in amrdata.auxtype.
     # This must be a list of length maux, each element of which is one of:

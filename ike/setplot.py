@@ -72,8 +72,8 @@ def setplot(plotdata=None):
 #                                "ylimits": (27.5, 30.5),
 #                                "figsize": (8, 2.7)}}
 
-    regions = {"Gulf": {"xlimits": ((2500-150)*1000, (2500+150)*1000),
-                        "ylimits": ((5000-300)*1000, 5000*1000),
+    regions = {"Gulf": {"xlimits": ((2500-20)*1000, (2500+20)*1000),
+                        "ylimits": ((5000-40)*1000, 5000*1000),
                         "figsize": (6.4, 4.8)}}#,
 
     for (name, region_dict) in regions.items():
