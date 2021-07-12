@@ -261,12 +261,12 @@ def setrun(claw_pkg='geoclaw'):
     amrdata = rundata.amrdata
 
     # max number of refinement levels:
-    amrdata.amr_levels_max = 2
+    amrdata.amr_levels_max = 4
 
     # List of refinement ratios at each level (length at least mxnest-1)
-    amrdata.refinement_ratios_x = [50,50] # [500,50] 500m and 50m grids  
-    amrdata.refinement_ratios_y = [50,50]
-    amrdata.refinement_ratios_t = [50,50]
+    amrdata.refinement_ratios_x = [10,10,50] # [500,50] 500m and 50m grids  
+    amrdata.refinement_ratios_y = [10,10,50]
+    amrdata.refinement_ratios_t = [10,10,50]
 
     # Specify type of each aux variable in amrdata.auxtype.
     # This must be a list of length maux, each element of which is one of:
@@ -314,7 +314,9 @@ def setrun(claw_pkg='geoclaw'):
     #  [minlevel,maxlevel,t1,t2,x1,x2,y1,y2]
     regions.append([1, 1, 0., 1.e10,           0, 5000000.,          0.,5000000.]) #Whole region
     regions.append([1, 2, 0., 1.e10,   (2500-25)*1000., (2500+25)*1000.,  (5000-300)*1000., 5000*1000.]) #50 km wide and 300 km long
-    regions.append([2, 3, 0., 1.e10,   (2500-15)*1000., (2500+15)*1000.,   (5000-30)*1000., 5000*1000.]) # 30 km wide and 30 km long
+    regions.append([1, 3, 0., 1.e10,   (2500-15)*1000., (2500+15)*1000.,   (5000-30)*1000., 5000*1000.]) # 30 km wide and 30 km long
+    regions.append([1, 4, 0., 1.e10,   (2500-15)*1000., (2500+15)*1000.,   (5000-17)*1000., (5000-7)*1000.]) # area around barrier island
+    regions.append([1, 4, 0., 1.e10,   (2500-4)*1000., (2500+4)*1000.,   (5000-17)*1000., (5000)*1000.]) # area around bay
     
     # Gauges from Ike AWR paper (2011 Dawson et al)
     # Gauges from Path of storm 2
