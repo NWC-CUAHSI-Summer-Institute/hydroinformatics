@@ -72,8 +72,8 @@ def setplot(plotdata=None):
 #                                "ylimits": (27.5, 30.5),
 #                                "figsize": (8, 2.7)}}
 
-    regions = {"Gulf": {"xlimits": ((2500-150)*1000, (2500+150)*1000),
-                        "ylimits": ((5000-300)*1000, 5000*1000),
+    regions = {"Gulf": {"xlimits": ((2500-20)*1000, (2500+20)*1000),
+                        "ylimits": ((5000-40)*1000, 5000*1000),
                         "figsize": (6.4, 4.8)}}#,
 
     for (name, region_dict) in regions.items():
@@ -161,10 +161,10 @@ def setplot(plotdata=None):
 
     # Set up for axes in this figure:
     plotaxes = plotfigure.new_plotaxes()
-    plotaxes.xlimits = [-2, 1]
+    plotaxes.xlimits = [-1, 8]
     # plotaxes.xlabel = "Days from landfall"
     # plotaxes.ylabel = "Surface (m)"
-    plotaxes.ylimits = [-1, 5]
+    plotaxes.ylimits = [-1, 6]
     plotaxes.title = 'Surface'
 
     def gauge_afteraxes(cd):
@@ -174,13 +174,14 @@ def setplot(plotdata=None):
 
         # Fix up plot - in particular fix time labels
         axes.set_title('Station %s' % cd.gaugeno)
-        axes.set_xlabel('Days relative to landfall')
+        axes.set_xlabel('Days')
         axes.set_ylabel('Surface (m)')
-        axes.set_xlim([-2, 1])
-        axes.set_ylim([-1, 5])
-        axes.set_xticks([-2, -1, 0, 1])
-        axes.set_xticklabels([r"$-2$", r"$-1$", r"$0$", r"$1$"])
+        axes.set_xlim([-1, 8])
+        axes.set_ylim([-1, 8])
+        axes.set_xticks([-1, 0, 1, 2, 3, 4, 5, 6, 7, 8])
+        axes.set_xticklabels([r"$-1$", r"$0$", r"$1$", r"$2$", r"$3$", r"$4$", r"$5$", r"$6$", r"$7$", r"$8$"])
         axes.grid(True)
+        axes.set_aspect('equal')
     plotaxes.afteraxes = gauge_afteraxes
 
     # Plot surface as blue curve:
@@ -204,8 +205,10 @@ def setplot(plotdata=None):
     plotaxes = plotfigure.new_plotaxes()
     plotaxes.title = 'Gauge Locations'
     plotaxes.scaled = True
-    plotaxes.xlimits = [1180000, 2600000]
-    plotaxes.ylimits = [700000, 4500000]
+    plotaxes.xlimits = [(2500-20)*1000, (2500+20)*1000]
+    plotaxes.ylimits = [(5000-40)*1000, 5000*1000]
+    #plotaxes.xlimits = [0, 5000*1000]
+    #plotaxes.ylimits = [0, 5000*1000]
     plotaxes.afteraxes = gauge_location_afteraxes
     surgeplot.add_surface_elevation(plotaxes, bounds=surface_limits)
     surgeplot.add_land(plotaxes, bounds=[0.0, 20.0])
