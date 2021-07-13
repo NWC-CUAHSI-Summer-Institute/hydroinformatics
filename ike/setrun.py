@@ -330,16 +330,27 @@ def setrun(claw_pkg='geoclaw'):
 #     bay_gauges_y = np.linspace(4985*1000,5000*1000,num = 10)
 #     bay_guages_x = 2500*1000
 
-    gauges_y = np.linspace(4985*1000,5000*1000,num = 10)
-    gauges_x = np.linspace(2485*1000,2500*1000,num = 5)
+#     gauges_y = np.linspace(4985*1000,5000*1000,num = 10)
+#     gauges_x = np.linspace(2485*1000,2500*1000,num = 5)
     
-    gauge_num=1
-    for iy in range(len(gauges_y)):
-        for ix in range(len(gauges_x)):
-            rundata.gaugedata.gauges.append([gauge_num, gauges_x[ix], gauges_y[iy],
-                                    rundata.clawdata.t0,
-                                    rundata.clawdata.tfinal])
-            gauge_num+=1
+#     gauge_num=1
+#     for iy in range(len(gauges_y)):
+#         for ix in range(len(gauges_x)):
+#             rundata.gaugedata.gauges.append([gauge_num, gauges_x[ix], gauges_y[iy],
+#                                     rundata.clawdata.t0,
+#                                     rundata.clawdata.tfinal])
+#             gauge_num+=1
+
+    import numpy as np
+    gauge_points = np.array([[(5000-30)*1000+15700,(5000-30)*1000+16300,(5000-30)*1000+19800,(5000-30)*1000+24300,(5000-30)*1000+29800,(5000-30)*1000+18000,
+                              (5000-30)*1000+24300,(5000-30)*1000+24300],
+                         [2492.5*1000,2492.5*1000,2492.5*1000,2492.5*1000,2492.5*1000,2492.5*1000,2500*1000,(2500-1.5)*1000]])
+
+    gauge_points = np.transpose(gauge_points)
+    gauge_points = np.flip(gauge_points,1)
+    
+    for row in range(len(gauge_points)):
+            rundata.gaugedata.gauges.append([int(row+1), gauge_points[row,0], gauge_points[row,1],rundata.clawdata.t0,rundata.clawdata.tfinal])
     
     
 #     rundata.gaugedata.gauges.append([1, 2500*1000, 4990*1000,
