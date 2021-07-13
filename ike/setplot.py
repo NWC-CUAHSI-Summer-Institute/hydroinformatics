@@ -65,12 +65,16 @@ def setplot(plotdata=None):
     # ==========================================================================
     #   Plot specifications
     # ==========================================================================
-    regions = {"Gulf": {"xlimits": (clawdata.lower[0], clawdata.upper[0]),
-                        "ylimits": (clawdata.lower[1], clawdata.upper[1]),
+#     regions = {"Gulf": {"xlimits": (clawdata.lower[0], clawdata.upper[0]),
+#                         "ylimits": (clawdata.lower[1], clawdata.upper[1]),
+#                         "figsize": (6.4, 4.8)}}#,
+#                "LaTex Shelf": {"xlimits": (-97.5, -88.5),
+#                                "ylimits": (27.5, 30.5),
+#                                "figsize": (8, 2.7)}}
+
+    regions = {"Gulf": {"xlimits": ((2500-20)*1000, (2500+20)*1000),
+                        "ylimits": ((5000-40)*1000, 5000*1000),
                         "figsize": (6.4, 4.8)}}#,
-               #"LaTex Shelf": {"xlimits": (-97.5, -88.5),
-               #                "ylimits": (27.5, 30.5),
-               #                "figsize": (8, 2.7)}}
 
     for (name, region_dict) in regions.items():
 
@@ -157,10 +161,10 @@ def setplot(plotdata=None):
 
     # Set up for axes in this figure:
     plotaxes = plotfigure.new_plotaxes()
-    plotaxes.xlimits = [-2, 1]
+    plotaxes.xlimits = [-1, 8]
     # plotaxes.xlabel = "Days from landfall"
     # plotaxes.ylabel = "Surface (m)"
-    plotaxes.ylimits = [-1, 5]
+    plotaxes.ylimits = [-1, 12]
     plotaxes.title = 'Surface'
 
     def gauge_afteraxes(cd):
@@ -170,13 +174,14 @@ def setplot(plotdata=None):
 
         # Fix up plot - in particular fix time labels
         axes.set_title('Station %s' % cd.gaugeno)
-        axes.set_xlabel('Days relative to landfall')
+        axes.set_xlabel('Days')
         axes.set_ylabel('Surface (m)')
-        axes.set_xlim([-2, 1])
-        axes.set_ylim([-1, 5])
-        axes.set_xticks([-2, -1, 0, 1])
-        axes.set_xticklabels([r"$-2$", r"$-1$", r"$0$", r"$1$"])
+        axes.set_xlim([-1, 8])
+        axes.set_ylim([-1, 12])
+        axes.set_xticks([-1, 0, 1, 2, 3, 4, 5, 6, 7, 8])
+        axes.set_xticklabels([r"$-1$", r"$0$", r"$1$", r"$2$", r"$3$", r"$4$", r"$5$", r"$6$", r"$7$", r"$8$"])
         axes.grid(True)
+        axes.set_aspect('equal')
     plotaxes.afteraxes = gauge_afteraxes
 
     # Plot surface as blue curve:
@@ -200,8 +205,10 @@ def setplot(plotdata=None):
     plotaxes = plotfigure.new_plotaxes()
     plotaxes.title = 'Gauge Locations'
     plotaxes.scaled = True
-    plotaxes.xlimits = [-95.5, -94]
-    plotaxes.ylimits = [29.0, 30.0]
+    plotaxes.xlimits = [(2500-20)*1000, (2500+20)*1000]
+    plotaxes.ylimits = [(5000-40)*1000, 5000*1000]
+    #plotaxes.xlimits = [0, 5000*1000]
+    #plotaxes.ylimits = [0, 5000*1000]
     plotaxes.afteraxes = gauge_location_afteraxes
     surgeplot.add_surface_elevation(plotaxes, bounds=surface_limits)
     surgeplot.add_land(plotaxes, bounds=[0.0, 20.0])
@@ -215,7 +222,8 @@ def setplot(plotdata=None):
     plotdata.printfigs = True                # print figures
     plotdata.print_format = 'png'            # file format
     plotdata.print_framenos = 'all'          # list of frames to print
-    plotdata.print_gaugenos = [1, 2, 3, 4]   # list of gauges to print
+    import numpy as np
+    plotdata.print_gaugenos = np.linspace(1,50).astype(int)   # list of gauges to print
     plotdata.print_fignos = 'all'            # list of figures to print
     plotdata.html = True                     # create html files of plots?
     plotdata.latex = True                    # create latex file of plots?
