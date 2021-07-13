@@ -350,7 +350,7 @@ def setrun(claw_pkg='geoclaw'):
     gauge_points = np.flip(gauge_points,1)
     
     for row in range(len(gauge_points)):
-            rundata.gaugedata.gauges.append([int(row+1), gauge_points[row,0], gauge_points[row,1],rundata.clawdata.t0,rundata.clawdata.tfinal])
+            rundata.gaugedata.gauges.append([int(row+1), gauge_points[row,0], gauge_points[row,1],days2seconds(4),days2seconds(6)])
     
     
 #     rundata.gaugedata.gauges.append([1, 2500*1000, 4990*1000,
