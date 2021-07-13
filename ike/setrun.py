@@ -430,8 +430,8 @@ def setgeo(rundata):
     # clawutil.data.get_remote_file(
     #       "http://www.columbia.edu/~ktm2132/bathy/gulf_caribbean.tt3.tar.bz2")
     topo_hydro_dir = '/home/jovyan/data/topo_files_output/'
-    topo_fine_path = os.path.join(topo_hydro_dir, 'Melbourne_FL_m.nc')
-    topo_coarse_path = os.path.join(topo_hydro_dir, 'Melbourne_FL_coarse_m.nc')
+    topo_fine_path = os.path.join(topo_hydro_dir, 'Mel_s_b_3_m.txt')
+    topo_coarse_path = os.path.join(topo_hydro_dir, 'Mel_s_b_coarse_m.txt')
     topo_data.topofiles.append([4, topo_fine_path])
     topo_data.topofiles.append([4, topo_coarse_path])
 #     topo_fine_path = os.path.join(topo_hydro_dir, 'Melbourne_FL_m.txt')
