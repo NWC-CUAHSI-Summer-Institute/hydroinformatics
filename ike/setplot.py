@@ -164,7 +164,7 @@ def setplot(plotdata=None):
     plotaxes.xlimits = [-1, 8]
     # plotaxes.xlabel = "Days from landfall"
     # plotaxes.ylabel = "Surface (m)"
-    plotaxes.ylimits = [-1, 6]
+    plotaxes.ylimits = [-1, 12]
     plotaxes.title = 'Surface'
 
     def gauge_afteraxes(cd):
@@ -177,7 +177,7 @@ def setplot(plotdata=None):
         axes.set_xlabel('Days')
         axes.set_ylabel('Surface (m)')
         axes.set_xlim([-1, 8])
-        axes.set_ylim([-1, 8])
+        axes.set_ylim([-1, 12])
         axes.set_xticks([-1, 0, 1, 2, 3, 4, 5, 6, 7, 8])
         axes.set_xticklabels([r"$-1$", r"$0$", r"$1$", r"$2$", r"$3$", r"$4$", r"$5$", r"$6$", r"$7$", r"$8$"])
         axes.grid(True)
@@ -222,7 +222,8 @@ def setplot(plotdata=None):
     plotdata.printfigs = True                # print figures
     plotdata.print_format = 'png'            # file format
     plotdata.print_framenos = 'all'          # list of frames to print
-    plotdata.print_gaugenos = [1, 2, 3, 4]   # list of gauges to print
+    import numpy as np
+    plotdata.print_gaugenos = np.linspace(1,50).astype(int)   # list of gauges to print
     plotdata.print_fignos = 'all'            # list of figures to print
     plotdata.html = True                     # create html files of plots?
     plotdata.latex = True                    # create latex file of plots?

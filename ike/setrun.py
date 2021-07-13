@@ -121,7 +121,7 @@ def setrun(claw_pkg='geoclaw'):
     if clawdata.output_style == 1:
         # Output nout frames at equally spaced times up to tfinal:
         clawdata.tfinal = days2seconds(8)
-        recurrence = 4
+        recurrence = 1
         clawdata.num_output_times = int((clawdata.tfinal - clawdata.t0) *
                                         recurrence / (60**2 * 24))
 
@@ -264,7 +264,7 @@ def setrun(claw_pkg='geoclaw'):
     amrdata.amr_levels_max = 4
 
     # List of refinement ratios at each level (length at least mxnest-1)
-    amrdata.refinement_ratios_x = [10,10,50] # [500,50] 500m and 50m grids  
+    amrdata.refinement_ratios_x = [10,10,50] # 25km -> 2.5 km -> 250 m -> 50 m 
     amrdata.refinement_ratios_y = [10,10,50]
     amrdata.refinement_ratios_t = [10,10,50]
 
@@ -320,15 +320,37 @@ def setrun(claw_pkg='geoclaw'):
     
     # Gauges from Ike AWR paper (2011 Dawson et al)
     # Gauges from Path of storm 2
-    rundata.gaugedata.gauges.append([1, 2500*1000, 4990*1000,
+    
+#     shore_gauges_y = 4985*1000
+#     shore_guages_x = np.linspace(2485*1000,2500*1000,num = 10)
+    
+#     channel_gauges_y = 4988*1000
+#     channel_guages_x = np.linspace(2485*1000,2500*1000,num = 10)
+    
+#     bay_gauges_y = np.linspace(4985*1000,5000*1000,num = 10)
+#     bay_guages_x = 2500*1000
+
+    gauges_y = np.linspace(4985*1000,5000*1000,num = 10)
+    gauges_x = np.linspace(2485*1000,2500*1000,num = 5)
+    
+    gauge_num=1
+    for iy in range(len(gauges_y)):
+        for ix in range(len(gauges_x)):
+            rundata.gaugedata.gauges.append([gauge_num, gauges_x[ix], gauges_y[iy],
                                     rundata.clawdata.t0,
                                     rundata.clawdata.tfinal])
-    rundata.gaugedata.gauges.append([2, 2500*1000, 4991*1000,
-                                    rundata.clawdata.t0,
-                                    rundata.clawdata.tfinal])
-    rundata.gaugedata.gauges.append([3, 2495*1000, 4990*1000,
-                                    rundata.clawdata.t0,
-                                    rundata.clawdata.tfinal])    
+            gauge_num+=1
+    
+    
+#     rundata.gaugedata.gauges.append([1, 2500*1000, 4990*1000,
+#                                     rundata.clawdata.t0,
+#                                     rundata.clawdata.tfinal])
+#     rundata.gaugedata.gauges.append([2, 2500*1000, 4991*1000,
+#                                     rundata.clawdata.t0,
+#                                     rundata.clawdata.tfinal])
+#     rundata.gaugedata.gauges.append([3, 2495*1000, 4990*1000,
+#                                     rundata.clawdata.t0,
+#                                     rundata.clawdata.tfinal])    
 #     rundata.gaugedata.gauges.append([2, 1850000, 2000000,
 #                                     rundata.clawdata.t0,
 #                                     rundata.clawdata.tfinal])
