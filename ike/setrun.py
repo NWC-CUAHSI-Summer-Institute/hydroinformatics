@@ -10,7 +10,7 @@ that will be read in by the Fortran code.
 from __future__ import absolute_import
 from __future__ import print_function
 
-#import netCDF4
+import netCDF4
 import os
 import datetime
 import shutil
@@ -261,12 +261,14 @@ def setrun(claw_pkg='geoclaw'):
     amrdata = rundata.amrdata
 
     # max number of refinement levels:
-    amrdata.amr_levels_max = 4
+    amrdata.amr_levels_max = 3
 
     # List of refinement ratios at each level (length at least mxnest-1)
+
     amrdata.refinement_ratios_x = [10,10,50] # 25km -> 2.5 km -> 250 m -> 50 m 
     amrdata.refinement_ratios_y = [10,10,50]
     amrdata.refinement_ratios_t = [10,10,50]
+
 
     # Specify type of each aux variable in amrdata.auxtype.
     # This must be a list of length maux, each element of which is one of:
@@ -313,10 +315,8 @@ def setrun(claw_pkg='geoclaw'):
     # to specify regions of refinement append lines of the form
     #  [minlevel,maxlevel,t1,t2,x1,x2,y1,y2]
     regions.append([1, 1, 0., 1.e10,           0, 5000000.,          0.,5000000.]) #Whole region
-    regions.append([1, 2, 0., 1.e10,   (2500-25)*1000., (2500+25)*1000.,  (5000-300)*1000., 5000*1000.]) #50 km wide and 300 km long
+    regions.append([1, 2, 0., 1.e10,   (2500-18)*1000., (2500+18)*1000.,  (5000-200)*1000., 5000*1000.]) #50 km wide and 300 km long
     regions.append([1, 3, 0., 1.e10,   (2500-15)*1000., (2500+15)*1000.,   (5000-30)*1000., 5000*1000.]) # 30 km wide and 30 km long
-    regions.append([1, 4, 0., 1.e10,   (2500-15)*1000., (2500+15)*1000.,   (5000-17)*1000., (5000-7)*1000.]) # area around barrier island
-    regions.append([1, 4, 0., 1.e10,   (2500-4)*1000., (2500+4)*1000.,   (5000-17)*1000., (5000)*1000.]) # area around bay
     
     # Gauges from Ike AWR paper (2011 Dawson et al)
     # Gauges from Path of storm 2
@@ -351,6 +351,7 @@ def setrun(claw_pkg='geoclaw'):
 #     rundata.gaugedata.gauges.append([3, 2495*1000, 4990*1000,
 #                                     rundata.clawdata.t0,
 #                                     rundata.clawdata.tfinal])    
+
 #     rundata.gaugedata.gauges.append([2, 1850000, 2000000,
 #                                     rundata.clawdata.t0,
 #                                     rundata.clawdata.tfinal])
@@ -418,14 +419,16 @@ def setgeo(rundata):
     # clawutil.data.get_remote_file(
     #       "http://www.columbia.edu/~ktm2132/bathy/gulf_caribbean.tt3.tar.bz2")
     topo_hydro_dir = '/home/jovyan/data/topo_files_output/'
-#     topo_fine_path = os.path.join(topo_hydro_dir, 'Melbourne_FL_m.nc')
-#     topo_coarse_path = os.path.join(topo_hydro_dir, 'Melbourne_FL_coarse_m.nc')
-#     topo_data.topofiles.append([4, topo_fine_path])
-#     topo_data.topofiles.append([4, topo_coarse_path])
-    topo_fine_path = os.path.join(topo_hydro_dir, 'Melbourne_FL_m.txt')
-    topo_coarse_path = os.path.join(topo_hydro_dir, 'Melbourne_FL_coarse_m.txt')
-    topo_data.topofiles.append([3, topo_fine_path])
-    topo_data.topofiles.append([3, topo_coarse_path])
+    topo_fine_path = os.path.join(topo_hydro_dir, 'Melbourne_FL_m.nc')
+    topo_coarse_path = os.path.join(topo_hydro_dir, 'Melbourne_FL_coarse_m.nc')
+    topo_data.topofiles.append([4, topo_fine_path])
+    topo_data.topofiles.append([4, topo_coarse_path])
+#     topo_fine_path = os.path.join(topo_hydro_dir, 'Melbourne_FL_m.txt')
+#     topo_fine_path_27 = os.path.join(topo_hydro_dir, 'Melbourne_FL_27_m.txt')
+#     topo_coarse_path = os.path.join(topo_hydro_dir, 'Melbourne_FL_coarse_m.txt')
+#     #topo_data.topofiles.append([3, topo_fine_path])
+#     topo_data.topofiles.append([3, topo_fine_path_27])
+#     topo_data.topofiles.append([3, topo_coarse_path])
 
     # == setfixedgrids.data values ==
     rundata.fixed_grid_data.fixedgrids = []
