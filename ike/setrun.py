@@ -315,8 +315,10 @@ def setrun(claw_pkg='geoclaw'):
     # to specify regions of refinement append lines of the form
     #  [minlevel,maxlevel,t1,t2,x1,x2,y1,y2]
     regions.append([1, 1, 0., 1.e10,           0, 5000000.,          0.,5000000.]) #Whole region
-    regions.append([1, 2, 0., 1.e10,   (2500-18)*1000., (2500+18)*1000.,  (5000-200)*1000., 5000*1000.]) #50 km wide and 300 km long
+    regions.append([1, 2, 0., 1.e10,   (2500-25)*1000., (2500+25)*1000.,  (5000-300)*1000., 5000*1000.]) #50 km wide and 300 km long
     regions.append([1, 3, 0., 1.e10,   (2500-15)*1000., (2500+15)*1000.,   (5000-30)*1000., 5000*1000.]) # 30 km wide and 30 km long
+    regions.append([1, 4, 0., 1.e10,   (2500-15)*1000., (2500+15)*1000.,   (5000-17)*1000., (5000-7)*1000.]) # area around barrier island
+    regions.append([1, 4, 0., 1.e10,   (2500-4)*1000., (2500+4)*1000.,   (5000-17)*1000., (5000)*1000.]) # area around bay
     
     # Gauges from Ike AWR paper (2011 Dawson et al)
     # Gauges from Path of storm 2
@@ -350,7 +352,7 @@ def setrun(claw_pkg='geoclaw'):
     gauge_points = np.flip(gauge_points,1)
     
     for row in range(len(gauge_points)):
-            rundata.gaugedata.gauges.append([int(row+1), gauge_points[row,0], gauge_points[row,1],days2seconds(4),days2seconds(6)])
+            rundata.gaugedata.gauges.append([int(row+1), gauge_points[row,0], gauge_points[row,1],rundata.clawdata.t0,rundata.clawdata.tfinal])
     
     
 #     rundata.gaugedata.gauges.append([1, 2500*1000, 4990*1000,
