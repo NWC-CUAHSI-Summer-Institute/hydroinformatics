@@ -10,7 +10,7 @@ that will be read in by the Fortran code.
 from __future__ import absolute_import
 from __future__ import print_function
 
-import netCDF4
+# import netCDF4
 import os
 import datetime
 import shutil
@@ -432,8 +432,8 @@ def setgeo(rundata):
     topo_hydro_dir = '/home/jovyan/data/topo_files_output/'
     topo_fine_path = os.path.join(topo_hydro_dir, 'Mel_s_b_3_m.txt')
     topo_coarse_path = os.path.join(topo_hydro_dir, 'Mel_s_b_coarse_m.txt')
-    topo_data.topofiles.append([4, topo_fine_path])
-    topo_data.topofiles.append([4, topo_coarse_path])
+    topo_data.topofiles.append([3, topo_fine_path])
+    topo_data.topofiles.append([3, topo_coarse_path])
 #     topo_fine_path = os.path.join(topo_hydro_dir, 'Melbourne_FL_m.txt')
 #     topo_fine_path_27 = os.path.join(topo_hydro_dir, 'Melbourne_FL_27_m.txt')
 #     topo_coarse_path = os.path.join(topo_hydro_dir, 'Melbourne_FL_coarse_m.txt')
