@@ -358,15 +358,15 @@ def setrun(claw_pkg='geoclaw'):
 #     for row in range(len(gauge_points)):
 #             rundata.gaugedata.gauges.append([int(row+1), gauge_points[row,0], gauge_points[row,1],rundata.clawdata.t0,rundata.clawdata.tfinal])
 
-#Sav_s_b_3_m.txt
-import numpy as np
-gauge_points = np.array([[(5000-30)*1000+8000,(5000-30)*1000+10000,(5000-30)*1000+13000,(5000-30)*1000+15000,(5000-30)*1000+22000,(5000-30)*1000+24500,(5000-30)*1000+24300,(5000-30)*1000+24300],
+#   Sav_s_b_3_m.txt
+    import numpy as np
+    gauge_points = np.array([[(5000-30)*1000+8000,(5000-30)*1000+10000,(5000-30)*1000+13000,(5000-30)*1000+15000,(5000-30)*1000+22000,(5000-30)*1000+24500,(5000-30)*1000+24300,(5000-30)*1000+24300],
                          [2492.5*1000,2492.5*1000,2492.5*1000,2492.5*1000,2492.5*1000,2492.5*1000,2500*1000,(2500-1.5)*1000]])
 
-gauge_points = np.transpose(gauge_points)
-gauge_points = np.flip(gauge_points,1)
+    gauge_points = np.transpose(gauge_points)
+    gauge_points = np.flip(gauge_points,1)
 
-for row in range(len(gauge_points)):
+    for row in range(len(gauge_points)):
         rundata.gaugedata.gauges.append([int(row+1), gauge_points[row,0], gauge_points[row,1],rundata.clawdata.t0,rundata.clawdata.tfinal])
 
     
