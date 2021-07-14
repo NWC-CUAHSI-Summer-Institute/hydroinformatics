@@ -474,11 +474,11 @@ def setgeo(rundata):
 
 # Savannah_GA_s_b_3m.txt
     topo_hydro_dir = '/home/jovyan/data/topo_files_output/'
-    topo_fine_path = os.path.join(topo_hydro_dir, 'Sav_s_b_3_m.txt')
-#    topo_fine_path_27 = os.path.join(topo_hydro_dir, 'Sav_s_b_27_m.txt')
+#    topo_fine_path = os.path.join(topo_hydro_dir, 'Sav_s_b_3_m.txt')
+    topo_fine_path_30 = os.path.join(topo_hydro_dir, 'Sav_s_b_30_m.txt')
     topo_coarse_path = os.path.join(topo_hydro_dir, 'Sav_s_b_coarse_m.txt')
-    topo_data.topofiles.append([3, topo_fine_path])
-#    topo_data.topofiles.append([3, topo_fine_path_27])
+#    topo_data.topofiles.append([3, topo_fine_path])
+    topo_data.topofiles.append([3, topo_fine_path_30])
     topo_data.topofiles.append([3, topo_coarse_path])
 
     # == setfixedgrids.data values ==
