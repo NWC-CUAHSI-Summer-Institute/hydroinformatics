@@ -142,7 +142,7 @@ def setplot(plotdata=None):
     plotfigure = plotdata.new_plotfigure(name='Wind Speed')
     plotfigure.show = surge_data.wind_forcing and True
 
-    plotaxes = plotfigure.new_plotaxes()days2seconds(8)
+    plotaxes = plotfigure.new_plotaxes()
     plotaxes.xlimits = regions['Gulf']['xlimits']
     plotaxes.ylimits = regions['Gulf']['ylimits']
     plotaxes.title = "Wind Field"
