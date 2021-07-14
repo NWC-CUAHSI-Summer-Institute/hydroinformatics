@@ -223,7 +223,7 @@ def setplot(plotdata=None):
     plotdata.print_format = 'png'            # file format
     plotdata.print_framenos = 'all'          # list of frames to print
     import numpy as np
-    plotdata.print_gaugenos = [1,2,3,4,5,6,7,8]   # list of gauges to print
+    plotdata.print_gaugenos = [1,2,3,4,5,6,7,8,9,10]   # list of gauges to print
     plotdata.print_fignos = 'all'            # list of figures to print
     plotdata.html = True                     # create html files of plots?
     plotdata.latex = True                    # create latex file of plots?

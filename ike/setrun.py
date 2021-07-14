@@ -265,10 +265,14 @@ def setrun(claw_pkg='geoclaw'):
 
     # List of refinement ratios at each level (length at least mxnest-1)
 
-    amrdata.refinement_ratios_x = [10,10,50] # 25km -> 2.5 km -> 250 m -> 50 m 
-    amrdata.refinement_ratios_y = [10,10,50]
-    amrdata.refinement_ratios_t = [10,10,50]
+    amrdata.refinement_ratios_x = [10,20,5] # 25km -> 2.5 km -> 125 m -> 25 m 
+    amrdata.refinement_ratios_y = [10,20,5]
+    amrdata.refinement_ratios_t = [10,20,5]
 
+#     # THIS TAKES A LONG TIME (>16 hours) TO RUN!
+#     amrdata.refinement_ratios_x = [10,10,50] # 25km -> 2.5 km -> 250 m -> 5 m 
+#     amrdata.refinement_ratios_y = [10,10,50]
+#     amrdata.refinement_ratios_t = [10,10,50]
 
     # Specify type of each aux variable in amrdata.auxtype.
     # This must be a list of length maux, each element of which is one of:
@@ -314,17 +318,24 @@ def setrun(claw_pkg='geoclaw'):
     regions = rundata.regiondata.regions
     # to specify regions of refinement append lines of the form
     #  [minlevel,maxlevel,t1,t2,x1,x2,y1,y2]
+    
+    # Regions for all topographies
     regions.append([1, 1, 0., 1.e10,           0, 5000000.,          0.,5000000.]) #Whole region
     regions.append([1, 2, 0., 1.e10,   (2500-25)*1000., (2500+25)*1000.,  (5000-300)*1000., 5000*1000.]) #50 km wide and 300 km long
     regions.append([1, 3, 0., 1.e10,   (2500-15)*1000., (2500+15)*1000.,   (5000-30)*1000., 5000*1000.]) # 30 km wide and 30 km long
-#     regions.append([1, 4, 0., 1.e10,   (2500-15)*1000., (2500+15)*1000.,   (5000-17)*1000., (5000-7)*1000.]) # area around barrier island
-#     regions.append([1, 4, 0., 1.e10,   (2500-4)*1000., (2500+4)*1000.,   (5000-17)*1000., (5000)*1000.]) # area around bay
-#Sav_s_b_3_m.txt
-    regions.append([1, 4, 0., 1.e10,   (2500-15)*1000., (2500+15)*1000.,   (5000-30+6)*1000., (5000-30+15)*1000.]) # area around barrier island
-    regions.append([1, 4, 0., 1.e10,   (2500-4)*1000., (2500+4)*1000.,   (5000-30+6)*1000., (5000)*1000.]) # area around bay
+    
+#    # For Mel_s_b
+#     regions.append([1, 4, 0., 1.e10,   (2500-15)*1000., (2500.5)*1000.,   (5000-17)*1000., (5000-7)*1000.]) # area around barrier island
+#     regions.append([1, 4, 0., 1.e10,   (2500-4)*1000., (2500.5)*1000.,   (5000-17)*1000., (5000)*1000.]) # area around bay
+
+    # For Sav_s_b_3_m.txt
+    regions.append([1, 4, 0., 1.e10,   (2500-15)*1000., (2500.5)*1000.,   (5000-30+6)*1000., (5000-30+15)*1000.]) # area around barrier island
+    regions.append([1, 4, 0., 1.e10,   (2500-4)*1000., (2500.5)*1000.,   (5000-30+6)*1000., (5000)*1000.]) # area around bay
     
     # Gauges from Ike AWR paper (2011 Dawson et al)
     # Gauges from Path of storm 2
+    
+#    # To make grid of 50 gauges in study area of Mel_s_b
     
 #     shore_gauges_y = 4985*1000
 #     shore_guages_x = np.linspace(2485*1000,2500*1000,num = 10)
@@ -346,6 +357,7 @@ def setrun(claw_pkg='geoclaw'):
 #                                     rundata.clawdata.tfinal])
 #             gauge_num+=1
 
+#    # For Mel_s_b
 #     import numpy as np
 #     gauge_points = np.array([[(5000-30)*1000+15700,(5000-30)*1000+16300,(5000-30)*1000+19800,(5000-30)*1000+24300,(5000-30)*1000+29800,(5000-30)*1000+18000,
 #                               (5000-30)*1000+24300,(5000-30)*1000+24300],
@@ -358,10 +370,11 @@ def setrun(claw_pkg='geoclaw'):
 #     for row in range(len(gauge_points)):
 #             rundata.gaugedata.gauges.append([int(row+1), gauge_points[row,0], gauge_points[row,1],rundata.clawdata.t0,rundata.clawdata.tfinal])
 
-#   Sav_s_b_3_m.txt
+    #   For Sav_s_b_3_m.txt
     import numpy as np
-    gauge_points = np.array([[(5000-30)*1000+8000,(5000-30)*1000+10000,(5000-30)*1000+13000,(5000-30)*1000+15000,(5000-30)*1000+22000,(5000-30)*1000+24500,(5000-30)*1000+24300,(5000-30)*1000+24300],
-                         [2492.5*1000,2492.5*1000,2492.5*1000,2492.5*1000,2492.5*1000,2492.5*1000,2500*1000,(2500-1.5)*1000]])
+    gauge_points = np.array([[(5000-30)*1000+8000,(5000-30)*1000+10000,(5000-30)*1000+13000,(5000-30)*1000+15000,(5000-30)*1000+22000,(5000-30)*1000+24500,
+                              (5000-30)*1000+24300,(5000-30)*1000+24300,(5000-30)*1000+24300,(5000-30)*1000+10000],
+                         [2492.5*1000,2492.5*1000,2492.5*1000,2492.5*1000,2492.5*1000,2492.5*1000,2500*1000,(2500-1.5)*1000,(2500+1.5)*1000,2507.5*1000]])
 
     gauge_points = np.transpose(gauge_points)
     gauge_points = np.flip(gauge_points,1)
@@ -369,6 +382,7 @@ def setrun(claw_pkg='geoclaw'):
     for row in range(len(gauge_points)):
         rundata.gaugedata.gauges.append([int(row+1), gauge_points[row,0], gauge_points[row,1],rundata.clawdata.t0,rundata.clawdata.tfinal])
 
+#    # To set individual gauges
     
 #     rundata.gaugedata.gauges.append([1, 2500*1000, 4990*1000,
 #                                     rundata.clawdata.t0,
