@@ -1,2 +1,2 @@
 # Hydroinformatics
-Repository will hold hydroinformatics group work
+Repository contains hydroinformatics group work
