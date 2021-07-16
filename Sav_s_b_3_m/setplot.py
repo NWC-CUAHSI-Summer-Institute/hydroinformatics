@@ -53,7 +53,7 @@ def setplot(plotdata=None):
                                              kwargs={"markersize": 4})
 
     # Color limits
-    surface_limits = [-5.0, 5.0]
+    surface_limits = [-2.0, 1.8]
     speed_limits = [0.0, 3.0]
     wind_limits = [0, 64]
     pressure_limits = [935, 1013]
