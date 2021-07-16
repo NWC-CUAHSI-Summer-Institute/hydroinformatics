@@ -260,14 +260,23 @@ def setrun(claw_pkg='geoclaw'):
     # ---------------
     amrdata = rundata.amrdata
     
-            # max number of refinement levels:
-    amrdata.amr_levels_max = 5
-
+         # max number of refinement levels:
+    amrdata.amr_levels_max = 4
     # List of refinement ratios at each level (length at least mxnest-1)
 
-    amrdata.refinement_ratios_x = [10,5,4,5] # 25km -> 2.5 km -> 500m -> 125 m -> 25 m 
-    amrdata.refinement_ratios_y = [10,5,4,5]
-    amrdata.refinement_ratios_t = [10,5,4,5]
+    amrdata.refinement_ratios_x = [10,20,5] # 25km -> 2.5 km -> 125 m -> 25 m  
+    amrdata.refinement_ratios_y = [10,20,5]
+    amrdata.refinement_ratios_t = [10,20,5]
+    
+            # max number of refinement levels:
+#     THIS WAS TOO FAST AND THE HIGHEST RESOLUTION AMR WAS NOT USED
+#     amrdata.amr_levels_max = 5
+
+#     # List of refinement ratios at each level (length at least mxnest-1)
+
+#     amrdata.refinement_ratios_x = [10,5,4,5] # 25km -> 2.5 km -> 500m -> 125 m -> 25 m 
+#     amrdata.refinement_ratios_y = [10,5,4,5]
+#     amrdata.refinement_ratios_t = [10,5,4,5]
 
 #     # THIS WAS ABOUT 30-40 min but some areas were not refined enough.
 #     # max number of refinement levels:
@@ -338,13 +347,18 @@ def setrun(claw_pkg='geoclaw'):
 #     regions.append([1, 4, 0., 1.e10,   (2500-15)*1000., (2500.5)*1000.,   (5000-17)*1000., (5000-7)*1000.]) # area around barrier island
 #     regions.append([1, 4, 0., 1.e10,   (2500-4)*1000., (2500.5)*1000.,   (5000-17)*1000., (5000)*1000.]) # area around bay
 
-    # For Sav_s_b_3_m.txt
+#     # For Sav_s_b_3_m.txt
 #     regions.append([1, 4, 0., 1.e10,   (2500-15)*1000., (2500.5)*1000.,   (5000-30+6)*1000., (5000-30+15)*1000.]) # area around barrier island
 #     regions.append([1, 4, 0., 1.e10,   (2500-4)*1000., (2500.5)*1000.,   (5000-30+6)*1000., (5000)*1000.]) # area around bay
-
-        # For Sav_s_b_3_m.txt
-    regions.append([3, 5, 0., 1.e10,   (2500-15)*1000., (2500.5)*1000.,   (5000-30+6)*1000., (5000-30+15)*1000.]) # area around barrier island
-#     regions.append([3, 5, 0., 1.e10,   (2500-5)*1000., (2500.5)*1000.,   (5000-30+6)*1000., (5000)*1000.]) # area around bay
+    
+#         # For Sav_s_b_30_m.txt
+#     regions.append([1, 5, 0., 1.e10,   (2500-15)*1000., (2500.5)*1000.,   (5000-30+6)*1000., (5000-30+15)*1000.]) # area around barrier island
+#     regions.append([1, 5, 0., 1.e10,   (2500-5)*1000., (2500.5)*1000.,   (5000-30+6)*1000., (5000)*1000.]) # area around bay
+    
+            # For Sav_s_b_30_m.txt
+    regions.append([3, 4, 0., 1.e10,   (2500-15)*1000., (2500.5)*1000.,   (5000-30+6)*1000., (5000-30+15)*1000.]) # area around barrier island
+#    regions.append([3, 4, 0., 1.e10,   (2500-7)*1000., (2500.5)*1000.,   (5000-30+6)*1000., (5000)*1000.]) # area around bay
+    
     
     # Gauges from Ike AWR paper (2011 Dawson et al)
     # Gauges from Path of storm 2
@@ -390,9 +404,19 @@ def setrun(claw_pkg='geoclaw'):
 #                               (5000-30)*1000+24300,(5000-30)*1000+24300,(5000-30)*1000+24300,(5000-30)*1000+10000],
 #                          [2492.5*1000,2492.5*1000,2492.5*1000,2492.5*1000,2492.5*1000,2492.5*1000,2500*1000,(2500-1.5)*1000,(2500+1.5)*1000,2507.5*1000]])
 
-    gauge_points = np.array([[(5000-30)*1000+8000,(5000-30)*1000+10000,(5000-30)*1000+13000,(5000-30)*1000+15000,(5000-30)*1000+22000,(5000-30)*1000+24500,
-                                  (5000-30)*1000+24300,(5000-30)*1000+24300,(5000-30)*1000+24300,(5000-30)*1000+10000],
-                             [(2500-4)*1000,(2500-4)*1000,(2500-4)*1000,(2500-4)*1000,(2500-4)*1000,(2500-4)*1000,2500*1000,(2500-1.5)*1000,(2500+1.5)*1000,(2500+4)*1000]])
+    gauge_points = np.array([[(5000-30)*1000+8000,
+                              (5000-30)*1000+14500,(5000-30)*1000+14500,(5000-30)*1000+14500,
+                              (5000-30)*1000+16000,(5000-30)*1000+16000,(5000-30)*1000+16000,
+                              (5000-30)*1000+19400,(5000-30)*1000+19400,(5000-30)*1000+19400,
+                             (5000-30)*1000+24300,(5000-30)*1000+24300,
+                             (5000-30)*1000+8000,(5000-30)*1000+10000,(5000-30)*1000+13000,
+                             (5000-30)*1000+14500,(5000-30)*1000+16000,(5000-30)*1000+19400,(5000-30)*1000+22000],
+                            [(2500-4)*1000,
+                             (2500-4)*1000,(2500-2)*1000,(2500-6)*1000,
+                             (2500-4)*1000,(2500-2)*1000,(2500-6)*1000,
+                             (2500-4)*1000,(2500-2)*1000,(2500-6)*1000,
+                            2500*1000,(2500-1.5)*1000,
+                            (2500)*1000,(2500)*1000,(2500)*1000,(2500)*1000,(2500)*1000,(2500)*1000,(2500)*1000]])
 
 
     gauge_points = np.transpose(gauge_points)
@@ -491,10 +515,10 @@ def setgeo(rundata):
 #     topo_data.topofiles.append([3, topo_fine_path_27])
 #     topo_data.topofiles.append([3, topo_coarse_path])
 
-# Sav_s_nb_3_m.txt
+# Savannah_GA_s_b_3m.txt
     topo_hydro_dir = '/home/jovyan/data/topo_files_output/'
     topo_fine_path = os.path.join(topo_hydro_dir, 'Sav_s_nb_3_m.txt')
-#    topo_fine_path_30 = os.path.join(topo_hydro_dir, 'Sav_s_b_30_m.txt')
+#    topo_fine_path_30 = os.path.join(topo_hydro_dir, 'Sav_s_nb_30_m.txt')
     topo_coarse_path = os.path.join(topo_hydro_dir, 'Sav_s_nb_coarse_m.txt')
     topo_data.topofiles.append([3, topo_fine_path])
 #    topo_data.topofiles.append([3, topo_fine_path_30])
