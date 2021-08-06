@@ -121,7 +121,7 @@ def setrun(claw_pkg='geoclaw'):
     if clawdata.output_style == 1:
         # Output nout frames at equally spaced times up to tfinal:
         clawdata.tfinal = days2seconds(8)
-        recurrence = 48
+        recurrence = 1
         clawdata.num_output_times = int((clawdata.tfinal - clawdata.t0) *
                                         recurrence / (60**2 * 24))
 
@@ -261,12 +261,19 @@ def setrun(claw_pkg='geoclaw'):
     amrdata = rundata.amrdata
     
          # max number of refinement levels:
-    amrdata.amr_levels_max = 4
+    amrdata.amr_levels_max = 5
+    
     # List of refinement ratios at each level (length at least mxnest-1)
-
-    amrdata.refinement_ratios_x = [10,20,5] # 25km -> 2.5 km -> 125 m -> 25 m  
-    amrdata.refinement_ratios_y = [10,20,5]
-    amrdata.refinement_ratios_t = [10,20,5]
+    amrdata.refinement_ratios_x = [10,25,2,5] # 25km -> 2.5 km -> 100 m -> 50 m -> 10  #AMR2
+    amrdata.refinement_ratios_y = [10,25,2,5]
+    amrdata.refinement_ratios_t = [10,25,2,5]  
+    
+#          # max number of refinement levels:
+#     amrdata.amr_levels_max = 4
+    
+#     amrdata.refinement_ratios_x = [10,25,4] # 25km -> 2.5 km -> 100 m -> 25 m  #AMR1
+#     amrdata.refinement_ratios_y = [10,25,4]
+#     amrdata.refinement_ratios_t = [10,25,4]
     
             # max number of refinement levels:
 #     THIS WAS TOO FAST AND THE HIGHEST RESOLUTION AMR WAS NOT USED
@@ -356,8 +363,8 @@ def setrun(claw_pkg='geoclaw'):
 #     regions.append([1, 5, 0., 1.e10,   (2500-5)*1000., (2500.5)*1000.,   (5000-30+6)*1000., (5000)*1000.]) # area around bay
     
             # For Sav_s_b_30_m.txt
-    regions.append([3, 4, 0., 1.e10,   (2500-15)*1000., (2500.5)*1000.,   (5000-30+6)*1000., (5000-30+15)*1000.]) # area around barrier island
-    regions.append([3, 4, 0., 1.e10,   (2500-7)*1000., (2500.5)*1000.,   (5000-30+6)*1000., (5000)*1000.]) # area around bay
+    regions.append([4, 5, 0., 1.e10,   (2500-15)*1000., (2500.5)*1000.,   (5000-30+6)*1000., (5000-30+15)*1000.]) # area around barrier island
+    regions.append([4, 5, 0., 1.e10,   (2500-7)*1000., (2500.5)*1000.,   (5000-30+6)*1000., (5000)*1000.]) # area around bay
     
     
     # Gauges from Ike AWR paper (2011 Dawson et al)
@@ -517,11 +524,11 @@ def setgeo(rundata):
 
 # Savannah_GA_s_b_3m.txt
     topo_hydro_dir = '/home/jovyan/data/topo_files_output/'
-    topo_fine_path = os.path.join(topo_hydro_dir, 'Sav_s_b_3_m.txt')
-#    topo_fine_path_30 = os.path.join(topo_hydro_dir, 'Sav_s_b_30_m.txt')
+#    topo_fine_path = os.path.join(topo_hydro_dir, 'Sav_s_b_3_m.txt')
+    topo_fine_path_3 = os.path.join(topo_hydro_dir, 'Sav_s_b_3_m.txt')
     topo_coarse_path = os.path.join(topo_hydro_dir, 'Sav_s_b_coarse_m.txt')
-    topo_data.topofiles.append([3, topo_fine_path])
-#    topo_data.topofiles.append([3, topo_fine_path_30])
+#    topo_data.topofiles.append([3, topo_fine_path])
+    topo_data.topofiles.append([3, topo_fine_path_3])
     topo_data.topofiles.append([3, topo_coarse_path])
 
     # == setfixedgrids.data values ==
