@@ -263,10 +263,15 @@ def setrun(claw_pkg='geoclaw'):
          # max number of refinement levels:
     amrdata.amr_levels_max = 5
     
-    # List of refinement ratios at each level (length at least mxnest-1)
-    amrdata.refinement_ratios_x = [10,25,2,5] # 25km -> 2.5 km -> 100 m -> 50 m -> 10  #AMR2
-    amrdata.refinement_ratios_y = [10,25,2,5]
-    amrdata.refinement_ratios_t = [10,25,2,5]  
+            # List of refinement ratios at each level (length at least mxnest-1)
+    amrdata.refinement_ratios_x = [10,10,5,5] # 25km -> 2.5 km -> 250 m -> 50 m -> 10  #AMR2
+    amrdata.refinement_ratios_y = [10,10,5,5]
+    amrdata.refinement_ratios_t = [10,10,5,5]  
+    
+#     # List of refinement ratios at each level (length at least mxnest-1)
+#     amrdata.refinement_ratios_x = [10,25,2,5] # 25km -> 2.5 km -> 100 m -> 50 m -> 10  #AMR2
+#     amrdata.refinement_ratios_y = [10,25,2,5]
+#     amrdata.refinement_ratios_t = [10,25,2,5]  
     
 #          # max number of refinement levels:
 #     amrdata.amr_levels_max = 4
