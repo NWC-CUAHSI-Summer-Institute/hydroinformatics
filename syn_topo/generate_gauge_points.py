@@ -296,21 +296,37 @@ for p in profiles:
                                       directory = profile_dir,shape = s, 
                                       bay = b, plot = True)
             np.savetxt(output_dir+name+'.csv',gauge_point_set,delimiter = ',')
-            
+
+# this loop terminates on Shallote because of a memory issue
+#%%
+# save gauges for Shallote only
+p=profiles[4]
+name0 = p.split(sep = '.')[0]
+for b in bays:
+    name1 = str(b)
+    for s in shapes:
+        name2 = s
+        name = name0+'-'+name1+'-'+name2
+        gauge_point_set=\
+            generate_gauge_points(site_file_name=p,
+                                  directory = profile_dir,shape = s, 
+                                  bay = b, plot = True)
+        np.savetxt(output_dir+name+'.csv',gauge_point_set,delimiter = ',')
+
 #%%
 ###Test
 
-p = profiles[0]
-name0 = p.split(sep = '.')[0]
-b = bays[0]
-name1 = str(b)
-s =shapes[0]
-name2 = s
-name = name0+'-'+name1+'-'+name2
-gauge_point_set=\
-    generate_gauge_points(site_file_name=p,directory = profile_dir,shape = s,
-                          bay = b, plot = True)
-np.savetxt(output_dir+name+'.csv',gauge_point_set,delimiter = ',')
+# p = profiles[0]
+# name0 = p.split(sep = '.')[0]
+# b = bays[0]
+# name1 = str(b)
+# s =shapes[0]
+# name2 = s
+# name = name0+'-'+name1+'-'+name2
+# gauge_point_set=\
+#     generate_gauge_points(site_file_name=p,directory = profile_dir,shape = s,
+#                           bay = b, plot = True)
+# np.savetxt(output_dir+name+'.csv',gauge_point_set,delimiter = ',')
 
 #%%
 # generate_topo(site_file_name='Shallotte_profile.csv',shape = 'curved', bay = True, plot = 3)
