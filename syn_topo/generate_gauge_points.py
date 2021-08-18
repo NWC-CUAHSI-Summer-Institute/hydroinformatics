@@ -32,7 +32,7 @@ def generate_gauge_points(site_file_name,directory,shape = 'straight',bay = Fals
     from matplotlib import pyplot as plt
     import seaborn as sns; sns.set_theme()
     
-    #%%
+
     import pandas as pd
     import os
     datadir = os.path.join(directory) # directory for elevation profile data files
@@ -44,7 +44,7 @@ def generate_gauge_points(site_file_name,directory,shape = 'straight',bay = Fals
     df2 = pd.read_csv(filepath2)
     df2 = df2.loc[0:16,:]
     
-    #%%
+
     ### Generate fine topography
     elev = df.loc[:,'Elevation']
     dist = df.loc[:,'Distance']
@@ -53,14 +53,14 @@ def generate_gauge_points(site_file_name,directory,shape = 'straight',bay = Fals
     elev = elev.to_numpy()
     elev = np.flip(elev)
     dist = dist.to_numpy()
-    #%%
+
     #Create spline model
     
     cs = CubicSpline(dist,elev)
     
     syn_elev = cs(dist)
     
-    #%%
+
     
     # #Generating Plots
     
@@ -75,14 +75,14 @@ def generate_gauge_points(site_file_name,directory,shape = 'straight',bay = Fals
     #     plt.title(site_file_name)
     #     plt.legend(loc='best')
     
-    #%%
+
     # Making it 3D
     
     y = dist
     x = y
     z = np.zeros((len(y),len(x)))
     
-    #%%
+
     # Defining the shorline shoreline (z=0 contour)
     above_sl = elev>-5
     # above_sl = above_sl.to_numpy()
@@ -127,7 +127,7 @@ def generate_gauge_points(site_file_name,directory,shape = 'straight',bay = Fals
         
         river_width = bay_width/10
         x_riv = np.logical_and(x > x_bay-river_width/2, x < x_bay+river_width/2)
-    #%%
+
 
     # to make 2d grid of z values
     for col in range(z.shape[1]):
@@ -143,7 +143,7 @@ def generate_gauge_points(site_file_name,directory,shape = 'straight',bay = Fals
                 y_riv = y>sb[col]
                 z[y_riv,col]=-5
     
-    #%%
+
     
 #Add in transition
     if bay == True:
@@ -186,7 +186,7 @@ def generate_gauge_points(site_file_name,directory,shape = 'straight',bay = Fals
                     
                     z[yind,:]=zcross_syn
     
-    #%%
+
     
     #heatmap
     # if (plot == 2) or (plot == 3):
@@ -199,7 +199,7 @@ def generate_gauge_points(site_file_name,directory,shape = 'straight',bay = Fals
         plt.figure()
         sns.heatmap(zsub,cmap='seismic',center=0)
         
-    #%%
+
 
     # define gauge points
     
@@ -210,7 +210,7 @@ def generate_gauge_points(site_file_name,directory,shape = 'straight',bay = Fals
     gauge_points = np.zeros((1,2))
     x_gg = x_ggs[1]
     for x_gg in x_ggs:
-        x_ind = int(x_gg/3)
+        x_ind = int((x_gg)/3)
         zs = z[:,x_ind]
         y_shore_ggs = y[np.logical_and(zs>-0.5,zs<0)]
         # y_shore_ggs = y[np.round(zs)==0]
@@ -228,17 +228,17 @@ def generate_gauge_points(site_file_name,directory,shape = 'straight',bay = Fals
         y_ind = np.append(y_sg_ind,y_ind_new).astype(int)
         y_ggs = (dim-30)*1000+y[y_ind]
         for y_gg in y_ggs:    
-            gauge_points = np.append(gauge_points,[[x_gg,y_gg]],axis = 0)
+            gauge_points = np.append(gauge_points,[[x_gg-15000+dim/2*1000,y_gg]],axis = 0)
     
     gauge_points = np.delete(gauge_points,[0],axis = 0)
     
     
     if bay == True:
-        x_bay_ggs = x_bay    
+        x_bay_ggs = x_bay   
         y_bay_ggs = np.linspace((dim-30)*1000+y_bs,(dim-30)*1000+y_max,10)
         
         for y_b_gg in y_bay_ggs:
-            gauge_points = np.append(gauge_points,[[x_bay_ggs,y_b_gg]],axis = 0)
+            gauge_points = np.append(gauge_points,[[x_bay_ggs-15000+dim/2*1000,y_b_gg]],axis = 0)
     
     if (plot == True):
         plt.figure()
@@ -248,27 +248,30 @@ def generate_gauge_points(site_file_name,directory,shape = 'straight',bay = Fals
         plt.plot(y_ggs,zs[y_ind],'r.')
     
     
-    #%%
+
     
     # plot gauge locations
     if (plot == True):
         plt.figure()
         plt.plot(gauge_points[:,0],gauge_points[:,1],'g.')
     
-    #%%
     
     if return_gauge_points == True:
         return(gauge_points)
     
-    #%%
+#%%
+### creating useful variables
 
-my_dir = 'C:\\Users\\jbarrett.carter\\OneDrive\\CUAHSI-SI\\Topography\\Profiles'
+import numpy as np
+
+profile_dir = 'C:\\Users\\jbarrett.carter\\OneDrive\\CUAHSI-SI\\Topography\\Profiles'
+output_dir = 'C:\\Users\\jbarrett.carter\\OneDrive\\CUAHSI-SI\\Topography\\Gauges\\'
 
 ### to generate one set of gauges at a time
 # ggs = generate_gauge_points(site_file_name='Melbourne_FL.csv', directory = my_dir,
 #                             shape = 'straight', bay = False, plot = True)
 
-### to generate all sets of gauge locations
+
 
 shapes = ['straight','points','curved']
 
@@ -277,7 +280,9 @@ bays = [True, False]
 profiles = ['Atlantic_city_NJ.csv','Marley_beach_SC.csv','Melbourne_FL.csv',
             'Savannah_GA.csv','Shallotte_NC.csv']
 
-gauge_point_sets = {}
+#%% 
+### generate all sets of gauge locations and save as CSV
+
 
 for p in profiles:
     name0 = p.split(sep = '.')[0]
@@ -286,14 +291,28 @@ for p in profiles:
         for s in shapes:
             name2 = s
             name = name0+'-'+name1+'-'+name2
-            gauge_point_sets[name]=\
+            gauge_point_set=\
                 generate_gauge_points(site_file_name=p,
-                                      directory = my_dir,shape = s, 
+                                      directory = profile_dir,shape = s, 
                                       bay = b, plot = True)
+            np.savetxt(output_dir+name+'.csv',gauge_point_set,delimiter = ',')
             
-            
+#%%
+###Test
 
+p = profiles[0]
+name0 = p.split(sep = '.')[0]
+b = bays[0]
+name1 = str(b)
+s =shapes[0]
+name2 = s
+name = name0+'-'+name1+'-'+name2
+gauge_point_set=\
+    generate_gauge_points(site_file_name=p,directory = profile_dir,shape = s,
+                          bay = b, plot = True)
+np.savetxt(output_dir+name+'.csv',gauge_point_set,delimiter = ',')
 
+#%%
 # generate_topo(site_file_name='Shallotte_profile.csv',shape = 'curved', bay = True, plot = 3)
 # for profile in profiles:
 #     generate_topo(site_file_name=profile, directory = my_dir,shape = 'straight', 
